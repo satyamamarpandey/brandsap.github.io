@@ -21,6 +21,7 @@ export default function Footer() {
             Strategy, identity, and web experience — shipped together as one
             clear story.
           </p>
+          <p>Built by Satyam Pandey.</p>
         </div>
 
         {/* RIGHT SIDE – NAV COLUMNS */}

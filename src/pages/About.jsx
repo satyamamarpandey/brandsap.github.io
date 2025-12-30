@@ -5,11 +5,7 @@ export default function About() {
         <div className="section-heading section-heading-center">
           <div className="pill pill-soft">About Brandsap</div>
           <h2>Design studio for modern product teams.</h2>
-          <p>
-            Brandsap is a small, focused studio that blends product thinking
-            with brand design. We work with teams who care about craft, clear
-            communication, and fast execution.
-          </p>
+          <p>Brandsap is built by Satyam and focuses on branding, strategy, and digital execution.</p>
         </div>
 
         <div className="card-grid">

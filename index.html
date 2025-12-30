@@ -1,13 +1,161 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/images/B Favicon.png" />
-    <title>Brandsap – Brand, Strategy & Digital</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Title + Description -->
+  <title>Brandsap – Brand, Strategy & Digital</title>
+  <meta name="description"
+    content="Brandsap is a brand and digital studio founded by Satyam Pandey—helping founders and businesses with branding, strategy, design, and high-performance websites." />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://brandsap.com/" />
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <!-- Author -->
+  <meta name="author" content="Satyam Pandey" />
+
+  <!-- Keywords (optional, fine to include) -->
+  <meta name="keywords"
+    content="Brandsap, branding, brand strategy, web design, website development, digital agency, marketing, Satyam Pandey, Satyam, Pandey, satyam pandey, Knowledge Home, knowledgehome.org" />
+
+  <!-- Favicons / App Icons (using your existing files) -->
+  <link rel="icon" type="image/png" href="/images/brandsap-favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+  <link rel="icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#0b0b0b" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Brandsap" />
+  <meta property="og:title" content="Brandsap – Brand, Strategy & Digital" />
+  <meta property="og:description"
+    content="Branding + strategy + digital execution. Brandsap helps founders and businesses launch and scale with premium design and high-performance websites." />
+  <meta property="og:url" content="https://brandsap.com/" />
+
+  <!-- Use your logo as OG image (recommended: later add a 1200x630 og image) -->
+  <meta property="og:image" content="https://brandsap.com/images/B%20Logo.png" />
+  <meta property="og:image:alt" content="Brandsap logo" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Brandsap – Brand, Strategy & Digital" />
+  <meta name="twitter:description"
+    content="Premium branding, strategy, and high-performance web builds for founders and small businesses." />
+  <meta name="twitter:image" content="https://brandsap.com/images/B%20Logo.png" />
+
+  <!-- Structured Data: Person (Satyam) -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "@id": "https://brandsap.com/#satyam-pandey",
+        "name": "Satyam Pandey",
+        "alternateName": ["Satyam", "Pandey", "Satyam Pandey", "satyamamarpandey", "pandey satyam"],
+        "url": "https://pandeysatyam.com/",
+        "sameAs": [
+          "https://pandeysatyam.com/",
+          "https://github.com/satyamamarpandey",
+          "https://www.linkedin.com/in/pandeysatyam/"
+        ],
+        "worksFor": {
+          "@type": "Organization",
+          "@id": "https://brandsap.com/#brandsap"
+        }
+      }
+    </script>
+
+  <!-- Structured Data: Organization (Brandsap) -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://brandsap.com/#brandsap",
+        "name": "Brandsap",
+        "url": "https://brandsap.com/",
+        "logo": "https://brandsap.com/images/B%20Logo.png",
+        "image": "https://brandsap.com/images/B%20Logo.png",
+        "founder": { "@type": "Person", "@id": "https://brandsap.com/#satyam-pandey" },
+        "description": "Brandsap is a brand and digital studio founded by Satyam Pandey—helping founders and businesses with branding, strategy, design, and high-performance websites.",
+        "sameAs": [
+          "https://pandeysatyam.com/",
+          "https://github.com/satyamamarpandey",
+          "https://www.linkedin.com/in/pandeysatyam/"
+        ]
+      }
+    </script>
+
+  <!-- Structured Data: Knowledge Home (Organization) -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://brandsap.com/#knowledge-home",
+        "name": "Knowledge Home",
+        "url": "https://knowledgehome.org/",
+        "founder": { "@type": "Person", "@id": "https://brandsap.com/#satyam-pandey" },
+        "description": "Knowledge Home is a learning and mentorship initiative focused on improving access to education and digital resources.",
+        "sameAs": ["https://knowledgehome.org/"]
+      }
+    </script>
+
+  <!-- Structured Data: WebSite -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://brandsap.com/#website",
+        "name": "Brandsap",
+        "url": "https://brandsap.com/",
+        "publisher": { "@type": "Organization", "@id": "https://brandsap.com/#brandsap" }
+      }
+    </script>
+
+  <!-- Structured Data: ItemList (Your products / sites) -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "@id": "https://brandsap.com/#products",
+        "name": "Satyam Pandey – Products & Projects",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Satyam Pandey Portfolio",
+            "url": "https://pandeysatyam.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Brandsap",
+            "url": "https://brandsap.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Knowledge Home",
+            "url": "https://knowledgehome.org/"
+          }
+        ]
+      }
+    </script>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <!-- Vite entry -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
