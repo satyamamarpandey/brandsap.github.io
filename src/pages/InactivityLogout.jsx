@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../lib/SupabaseClient";
 
 const DEFAULT_MINUTES = 20; // change this (e.g., 15/20/30)
 
