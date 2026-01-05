@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import { NavLink, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const NAV_LINKS = [
   { path: "/", label: "Home" },
@@ -8,7 +8,8 @@ const NAV_LINKS = [
   { path: "/services", label: "Services" },
   { path: "/process", label: "Process" },
   { path: "/pricing", label: "Pricing" },
-  { path: "/customers", label: "Customers" },
+  { path: "/careers", label: "Careers" },
+  { path: "/customers", label: "Customers" }
 ];
 
 export default function Navbar() {
@@ -16,16 +17,42 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ NEW: measure navbar height and set --navH so TopBar/main spacing is correct
+  const navRef = useRef(null);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  return (
-    <header className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
-      <div className="container navbar-inner">
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
 
+    const setNavH = () => {
+      const h = el.getBoundingClientRect().height || 0;
+      document.documentElement.style.setProperty("--navH", `${Math.ceil(h)}px`);
+    };
+
+    setNavH();
+
+    const ro = new ResizeObserver(() => setNavH());
+    ro.observe(el);
+
+    window.addEventListener("resize", setNavH);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", setNavH);
+    };
+  }, []);
+
+  return (
+    <header
+      ref={navRef}
+      className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}
+    >
+      <div className="container navbar-inner">
         {/* BRAND LOGO */}
         <button className="nav-brand-pill" onClick={() => navigate("/")}>
           <div className="nav-brand-icon">
