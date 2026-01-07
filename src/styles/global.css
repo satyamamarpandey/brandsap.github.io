@@ -1036,6 +1036,20 @@ main{
   font-size: 0.75rem;
 }
 
+.footer-built {
+  text-align: center;
+  color: #bbb;
+}
+
+.footer-creator {
+  font-weight: 700;
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-creator:hover {
+  text-decoration: underline;
+}
 /* =========================
    CAREERS / JOBS (existing)
 ========================= */

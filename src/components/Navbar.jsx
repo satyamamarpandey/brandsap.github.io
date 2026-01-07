@@ -8,8 +8,8 @@ const NAV_LINKS = [
   { path: "/services", label: "Services" },
   { path: "/process", label: "Process" },
   { path: "/pricing", label: "Pricing" },
-  { path: "/careers", label: "Careers" },
-  { path: "/customers", label: "Customers" }
+  { path: "/customers", label: "Customers" },
+  { path: "/careers", label: "Careers" }
 ];
 
 export default function Navbar() {

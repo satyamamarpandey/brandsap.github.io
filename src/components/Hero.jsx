@@ -11,43 +11,41 @@ export default function Hero() {
         <div className="hero-copy">
           <div className="pill pill-soft hero-pill tectonic-blur">
             <span className="pill-dot" />
-            BRANDSAP • Brand • Strategy • Digital
+            BRANDSAP STUDIO • Brand • Strategy • Web
           </div>
 
           <h1 className="hero-title tectonic-blur delay-1">
-            Shape a brand
+            Build a brand
             <br />
-            that sticks in memory.
+            people remember.
           </h1>
 
           <p className="hero-subtitle tectonic-blur delay-2">
-            We help modern teams turn ideas into sharp, memorable digital
-            experiences – from visual identity and websites to launch-ready
-            campaigns.
+            We create clear positioning, confident identity, and modern websites
+            that feel premium and drive action. Ideal for founders, creators,
+            and teams launching or leveling up.
           </p>
 
           <div className="hero-actions tectonic-blur delay-3">
-            {/* Go to Contact page */}
             <button
               className="primary-btn hero-primary"
               onClick={() => navigate("/contact")}
             >
-              Start building
+              Start a project
             </button>
 
-            {/* Go to Services / portfolio page */}
             <button
               className="ghost-btn hero-ghost"
               onClick={() => navigate("/services")}
             >
-              View work
+              Explore services
             </button>
           </div>
 
           <div className="hero-meta tectonic-blur delay-3">
-            <span className="meta-label">Made for modern brands</span>
+            <span className="meta-label">Fast, focused, and launch ready</span>
             <span className="meta-dot" />
-            <span>Strategy, design &amp; web in one place.</span>
+            <span>Strategy, design, and web in one place.</span>
           </div>
         </div>
 
@@ -56,22 +54,23 @@ export default function Hero() {
           <div className="hero-card hero-card-main glass-card">
             <div className="hero-card-header">
               <span className="chip chip-green">Brand system</span>
-              <span className="chip chip-neutral">Live preview</span>
+              <span className="chip chip-neutral">Website build</span>
             </div>
 
             <div className="hero-card-body">
               <div className="badge-row">
                 <div className="badge-pill">
                   <span className="badge-dot" />
-                  Logo &amp; identity
+                  Identity + guidelines
                 </div>
-                <div className="badge-pill">Web experience</div>
+                <div className="badge-pill">Landing pages</div>
+                <div className="badge-pill">Copy refresh</div>
               </div>
 
               <div className="stacked-panels">
                 <div className="panel panel-top">
-                  <span className="panel-label">Launch timeline</span>
-                  <span className="panel-value">4–6 weeks</span>
+                  <span className="panel-label">Typical timeline</span>
+                  <span className="panel-value">4 to 6 weeks</span>
                 </div>
 
                 <div className="panel panel-middle">
@@ -82,24 +81,23 @@ export default function Hero() {
                 </div>
 
                 <div className="panel panel-bottom">
-                  <span className="panel-label">Conversion uplift</span>
-                  <span className="panel-value">+32%</span>
+                  <span className="panel-label">Conversion focus</span>
+                  <span className="panel-value">Clean UX, clear CTA</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* FLOATING CARD – always in front & gently moving */}
+          {/* FLOATING CARD */}
           <div className="hero-card hero-card-float glass-card">
-            <span className="chip chip-purple">Micro-site</span>
-            <h3 className="hero-card-title">Interactive brand stories</h3>
+            <span className="chip chip-purple">Launch ready</span>
+            <h3 className="hero-card-title">Premium web experiences</h3>
             <p className="hero-card-text">
-              Scroll-based animations and subtle motion that keep visitors
-              engaged without feeling heavy.
+              Smooth motion, sharp layouts, and messaging that makes your value
+              obvious in seconds. Built to look great on mobile and desktop.
             </p>
           </div>
 
-          {/* we’re hiding these in CSS, but keep markup in case we want glows later */}
           <div className="hero-glow hero-glow-1" />
           <div className="hero-glow hero-glow-2" />
         </div>

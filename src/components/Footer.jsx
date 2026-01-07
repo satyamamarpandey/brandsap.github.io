@@ -18,10 +18,9 @@ export default function Footer() {
             that feel as focused as the products behind them.
           </p>
           <p className="footer-text-sub">
-            Strategy, identity, and web experience — shipped together as one
+            Strategy, identity, and web experience, shipped together as one
             clear story.
           </p>
-          <p>Built by Satyam Pandey.</p>
         </div>
 
         {/* RIGHT SIDE – NAV COLUMNS */}
@@ -191,14 +190,28 @@ export default function Footer() {
       {/* BOTTOM BAR */}
         <div className="footer-bottom">
         <div className="container footer-bottom-inner">
-            <div className="footer-bottom-left">
+          <div className="footer-bottom-left">
             <span>© {new Date().getFullYear()} Brandsap Studio</span>
             <span className="footer-dot">•</span>
             <span>Brand · Strategy · Web</span>
-            </div>
+            <span className="footer-dot">•</span>
+            <p className="footer-built">
+              Built by{" "}
+              <a
+                href="https://pandeysatyam.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-creator"
+              >
+                Satyam Pandey
+              </a>
+              .
+            </p>
+          </div>
 
             <div className="footer-bottom-right">
             {/* Optional small links (can point to real routes later) */}
+            
             <button
                 type="button"
                 className="footer-bottom-link"
