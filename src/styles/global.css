@@ -2265,3 +2265,266 @@ main{
     border-radius: 999px;
   }
 }
+
+/* --- Showcase: optional placeholder when a card is "in flight" --- */
+.showcase-placeholder {
+  min-height: 240px;
+  border-radius: 24px;
+}
+
+/* Wipe layer */
+.card-wipe {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-origin: left;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.04),
+    rgba(255,255,255,0)
+  );
+  pointer-events: none;
+}
+
+/* Make sure cards can host absolute wipe */
+.showcase-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.card-ghost {
+  padding: 10px 14px;
+  border-radius: 999px;
+}
+
+/* --- Feature expand overlay --- */
+.feature-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+  z-index: 60;
+}
+
+.feature-expanded {
+  position: fixed;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%);
+  width: min(980px, calc(100vw - 32px));
+  z-index: 61;
+  padding: 22px;
+  overflow: hidden;
+}
+
+.feature-expanded-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+}
+
+.feature-expanded-title {
+  font-size: 26px;
+  margin: 6px 0 8px;
+}
+
+.feature-expanded-body {
+  opacity: 0.85;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.feature-expanded-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+}
+
+.feature-expanded-col h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  opacity: 0.8;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.feature-expanded-col ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.feature-expanded-cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  .feature-expanded {
+    top: 8%;
+    padding: 18px;
+  }
+  .feature-expanded-split {
+    grid-template-columns: 1fr;
+  }
+}
+/* Sticky scrollytelling section */
+.sticky-split-section {
+  position: relative;
+  height: 220vh; /* controls how long the sticky animation lasts */
+  overflow: clip;
+}
+
+.sticky-split-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(70% 80% at 50% 20%, rgba(255,255,255,0.06), rgba(0,0,0,0));
+}
+
+.sticky-split-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+}
+
+.sticky-split-heading {
+  margin-bottom: 18px;
+}
+
+.sticky-split-stage {
+  position: relative;
+  height: 360px;
+  display: grid;
+  place-items: center;
+}
+
+/* The cards stack in the center (absolute), then we animate x/width */
+.sticky-card {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  height: 100%;
+  padding: 22px;
+  overflow: hidden;
+  will-change: transform, width, opacity;
+}
+
+/* wipe layer */
+.wipe-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-origin: left;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.04),
+    rgba(255,255,255,0)
+  );
+  pointer-events: none;
+}
+
+.sticky-split-hint {
+  margin-top: 14px;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  opacity: 0.75;
+  justify-content: center;
+}
+
+/* Mobile: fall back to normal stacked grid (simpler + smoother) */
+@media (max-width: 900px) {
+  .sticky-split-section {
+    height: auto;
+    padding: 36px 0;
+  }
+
+  .sticky-split-sticky {
+    position: static;
+    height: auto;
+  }
+
+  .sticky-split-stage {
+    height: auto;
+    display: grid;
+    gap: 16px;
+    place-items: stretch;
+  }
+
+  .sticky-card {
+    position: relative;
+    left: auto;
+    transform: none;
+    height: auto;
+    width: auto !important;
+    opacity: 1 !important;
+  }
+
+  .wipe-layer {
+    display: none;
+  }
+}
+/* Tight scrollytelling section */
+.sticky-split-section {
+  position: relative;
+  height: 150vh;  /* was 220vh — too long */
+  overflow: clip;
+}
+
+.sticky-split-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+}
+
+/* Keep stage + heading visually together */
+.sticky-split-heading {
+  margin-bottom: 14px;
+}
+
+.sticky-split-stage {
+  position: relative;
+  height: 340px; /* slightly tighter */
+  display: grid;
+  place-items: center;
+}
+
+/* Optional: remove the hint if it feels like it “floats” awkwardly */
+.sticky-split-hint {
+  margin-top: 10px;
+  opacity: 0.7;
+}
