@@ -11,12 +11,27 @@ export default function Home() {
   const stickyRef = useRef(null);
 
   useEffect(() => {
-    if (!activeId) return;
-    const t = setTimeout(() => {
-      stickyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
-    return () => clearTimeout(t);
-  }, [activeId]);
+  if (!activeId) return;
+
+  const t = setTimeout(() => {
+    const el = stickyRef.current;
+    if (!el) return;
+
+    const root = document.documentElement;
+    const styles = getComputedStyle(root);
+
+    const navH = parseFloat(styles.getPropertyValue("--navH")) || 72;
+    const topbarH = parseFloat(styles.getPropertyValue("--topbarH")) || 0;
+
+    const y = el.getBoundingClientRect().top + window.pageYOffset;
+    const offset = navH + topbarH + 16;
+
+    window.scrollTo({ top: y - offset, behavior: "smooth" });
+  }, 150);
+
+  return () => clearTimeout(t);
+}, [activeId]);
+
 
   return (
     <LayoutGroup id="home-cards">
@@ -29,9 +44,10 @@ export default function Home() {
       </section>
 
       {/* No extra section padding here */}
-      <div ref={stickyRef}>
-        <StickySplitFeatures />
-      </div>
+<div ref={stickyRef} className="sticky-split-anchor">
+  <StickySplitFeatures />
+</div>
+
     </LayoutGroup>
   );
 }

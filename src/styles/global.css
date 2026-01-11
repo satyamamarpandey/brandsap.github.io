@@ -2647,3 +2647,89 @@ li:empty{ display:none; }
 }
 
 /* (Your cards already create their own gold dots — keep those) */
+
+/* =========================
+   PAGE SPACING (desktop + mobile)
+   Fix: too much space at top, too little near footer
+========================= */
+
+/* tweak these two numbers to taste */
+:root{
+  --pagePadTop: 20px;     /* space between navbar and first content */
+  --pagePadBottom: 56px;  /* space before footer */
+}
+
+/* main is already responsible for sitting below sticky navbar/topbar */
+main{
+  padding-top: calc(var(--navH) + var(--topbarH) + var(--pagePadTop));
+  padding-bottom: var(--pagePadBottom);
+}
+
+/* prevent "double top spacing" if the first block is also a .section */
+main > .section:first-child,
+main > .page > .section:first-child,
+main > .page > section:first-child{
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* keep normal section rhythm (don’t compress everything) */
+.section{
+  padding: 3.25rem 0;
+}
+
+@media (max-width: 768px){
+  :root{
+    --pagePadTop: 14px;
+    --pagePadBottom: 40px;
+  }
+  .section{
+    padding: 2.25rem 0;
+  }
+}
+
+/* Fix scrollIntoView hiding under sticky navbar */
+.sticky-split-anchor{
+  scroll-margin-top: calc(var(--navH) + var(--topbarH) + 16px);
+}
+
+/* Make all programmatic scrolling respect the sticky navbar */
+html{
+  scroll-padding-top: calc(var(--navH) + var(--topbarH) + 16px);
+}
+
+/* Ensure THIS section never lands under the navbar */
+.sticky-split-section{
+  scroll-margin-top: calc(var(--navH) + var(--topbarH) + 16px);
+}
+
+/* =========================
+   StickySplit MOBILE HARD RESET
+   Fix: section rides up / overlaps previous content
+========================= */
+@media (max-width: 900px){
+
+  /* Only mobile version should exist in layout flow */
+  .sticky-split-desktop{ display: none !important; }
+  .sticky-split-mobile{ display: block !important; }
+
+  /* Kill any “sticky desktop math” that can pull the section upward */
+  .sticky-split-section{
+    min-height: auto !important;
+    height: auto !important;
+    margin-top: 28px !important;     /* ✅ adds breathing room above */
+    padding-top: 28px !important;    /* ✅ prevents “riding up” look */
+    padding-bottom: 34px !important;
+    transform: none !important;
+  }
+
+  .sticky-split-sticky{
+    position: static !important;
+    top: auto !important;
+  }
+
+  /* Make sure background layer doesn’t shift content visually */
+  .sticky-split-bg{
+    top: 0 !important;
+  }
+}
