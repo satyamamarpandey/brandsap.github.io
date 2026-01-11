@@ -2738,7 +2738,7 @@ html{
 
 @media (max-width: 768px) {
   :root {
-    --navH: 56px;   /* mobile navbar height */
+    --navH: 40px;   /* mobile navbar height */
   }
 }
 @media (max-width: 768px) {
