@@ -2660,9 +2660,10 @@ li:empty{ display:none; }
 }
 
 /* main is already responsible for sitting below sticky navbar/topbar */
+
 main{
-  padding-top: calc(var(--navH) + var(--topbarH) + var(--pagePadTop));
-  padding-bottom: var(--pagePadBottom);
+  padding-top: calc(var(--navH) + var(--topbarH));
+  padding-bottom: 56px;
 }
 
 /* prevent "double top spacing" if the first block is also a .section */
@@ -2731,5 +2732,19 @@ html{
   /* Make sure background layer doesn’t shift content visually */
   .sticky-split-bg{
     top: 0 !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  :root {
+    --navH: 56px;   /* mobile navbar height */
+  }
+}
+@media (max-width: 768px) {
+  .hero-section,
+  .page-hero,
+  .section:first-of-type {
+    padding-top: 12px;
   }
 }
