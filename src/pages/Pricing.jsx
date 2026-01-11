@@ -41,12 +41,13 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="feature-grid">
+        {/* ✅ add wipe-group here */}
+        <div className="feature-grid wipe-group">
           {PLANS.map((plan) => (
             <article
               key={plan.name}
               className={
-                "feature-card glass-card" +
+                "feature-card glass-card wipe-ltr" +
                 (plan.highlight ? " feature-card-highlight" : "")
               }
             >

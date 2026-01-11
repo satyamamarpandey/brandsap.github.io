@@ -1,7 +1,7 @@
 // src/pages/Careers.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../lib/SupabaseClient"; // ✅ fixed casing + path
+import { supabase } from "../lib/SupabaseClient";
 
 export default function Careers() {
   const [jobs, setJobs] = useState([]);
@@ -25,9 +25,7 @@ export default function Careers() {
 
         if (error) throw error;
 
-        if (!ignore) {
-          setJobs(Array.isArray(data) ? data : []);
-        }
+        if (!ignore) setJobs(Array.isArray(data) ? data : []);
       } catch (e) {
         if (!ignore) setErr(e?.message || "Failed to load jobs");
       } finally {
@@ -45,20 +43,20 @@ export default function Careers() {
   return (
     <div className="page careersPage">
       <section className="container careersSection">
-  <div className="careersTop">
-    <div className="careersPill">CAREERS</div>
-    <h1 className="careersH1">Join the team shaping Brandsap.</h1>
-    <p className="careersSub">Current job openings at Brandsap.</p>
-  </div>
+        <div className="careersTop">
+          <div className="careersPill">CAREERS</div>
+          <h1 className="careersH1">Join the team shaping Brandsap.</h1>
+          <p className="careersSub">Current job openings at Brandsap.</p>
+        </div>
 
         {loading && (
-          <div className="jobCard">
+          <div className="jobCard wipe-ltr">
             <div className="jobMuted">Loading jobs…</div>
           </div>
         )}
 
         {!loading && err && (
-          <div className="jobCard">
+          <div className="jobCard wipe-ltr">
             <div className="jobTitle">Couldn’t load jobs</div>
             <div className="jobMuted" style={{ marginTop: 8 }}>
               {err}
@@ -67,15 +65,15 @@ export default function Careers() {
         )}
 
         {!loading && !err && jobs.length === 0 && (
-          <div className="jobCard">
+          <div className="jobCard wipe-ltr">
             <div className="jobMuted">No openings right now.</div>
           </div>
         )}
 
         {!loading && !err && jobs.length > 0 && (
-          <div className="jobGrid">
+          <div className="jobGrid wipe-group">
             {jobs.map((j) => (
-              <div key={j.id} className="jobCard">
+              <div key={j.id} className="jobCard wipe-ltr">
                 <div className="jobTop">
                   <h3 className="jobTitle">{j.title}</h3>
                   <span className="jobPill">{j.type}</span>

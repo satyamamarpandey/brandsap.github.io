@@ -11,8 +11,10 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="feature-grid">
-          <article className="feature-card glass-card">
+        {/* ✅ add wipe-group here */}
+        <div className="feature-grid wipe-group">
+          {/* ✅ add wipe-ltr to each box */}
+          <article className="feature-card glass-card wipe-ltr">
             <span className="chip chip-neutral">Strategy</span>
             <h3>Brand foundations</h3>
             <p>
@@ -26,7 +28,7 @@ export default function Services() {
             </ul>
           </article>
 
-          <article className="feature-card glass-card">
+          <article className="feature-card glass-card wipe-ltr">
             <span className="chip chip-neutral">Design</span>
             <h3>Identity & visuals</h3>
             <p>
@@ -40,7 +42,7 @@ export default function Services() {
             </ul>
           </article>
 
-          <article className="feature-card glass-card">
+          <article className="feature-card glass-card wipe-ltr">
             <span className="chip chip-neutral">Digital</span>
             <h3>Web & launch</h3>
             <p>

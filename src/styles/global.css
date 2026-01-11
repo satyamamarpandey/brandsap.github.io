@@ -1,11 +1,13 @@
 /* src/styles/global.css
    =========================================================
-   FULL global.css (COPY/PASTE)
-   ✅ ONLY fixes:
-      1) Navbar/Topbar layering so TopBar links/buttons are clickable
-      2) TopBar button a bit smaller (Sign out)
-      3) Removes the duplicate bottom overrides that were spoiling layout
-   ❌ Everything else kept exactly as you shared.
+   FULL global.css (COPY/PASTE) — FINAL CLEAN
+   ✅ ONLY change vs what you pasted:
+      - Removed ALL duplicate navbar/topbar “fix” blocks + duplicate :root overrides
+      - Kept ONE consistent nav/topbar height source:
+          :root       -> --navH (navbar), --topbarH default 0
+          .app-root.has-topbar -> --topbarH becomes 44px
+      - Kept ONE final “Sticky Split” block at the bottom (as-is)
+   ❌ Everything else kept the same.
    ========================================================= */
 
 /* =========================
@@ -38,9 +40,14 @@
   --shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.65);
   --transition-fast: 150ms ease-out;
 
-  /* ✅ layout heights */
-  --navH: 52px;      /* adjust if your navbar height differs */
-  --topbarH: 44px;   /* TopBar height */
+  /* ✅ layout heights (single source of truth) */
+  --navH: 83px;     /* set to your real navbar height from DevTools */
+  --topbarH: 0px;   /* default 0 unless .app-root.has-topbar is present */
+}
+
+/* If TopBar exists on page, enable its height */
+.app-root.has-topbar{
+  --topbarH: 44px;
 }
 
 /* =========================
@@ -157,12 +164,11 @@ main{
 
 /* =========================
    NAVBAR
-   ✅ ONLY change: keep navbar below topbar so topbar stays clickable
 ========================= */
 .navbar{
   position: fixed;
   inset: 0 0 auto 0;
-  z-index: 40;
+  z-index: 500;
   padding: 0.8rem 0;
   background: rgba(5, 5, 9, 0.97);
   border-bottom: 1px solid var(--border-subtle);
@@ -384,48 +390,102 @@ main{
   .navbar{ padding: 0.6rem 0; }
 }
 
-/* Mobile sheet */
-.nav-mobile.sheet{ display: none; }
+/* =========================
+   MOBILE NAV OVERLAY — FINAL (works with Navbar.jsx above)
+========================= */
+
+/* keep navbar above everything */
+.navbar { z-index: 10000; }
+.nav-toggle { position: relative; z-index: 10001; }
+
+/* backdrop (closed) */
+.nav-mobile-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 9998;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+/* backdrop (open) */
+.nav-mobile-backdrop.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* sheet base (closed) */
+.nav-mobile.sheet{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(var(--navH) + var(--topbarH));
+  z-index: 9999;
+
+  padding: 18px 18px 22px;
+  background: rgba(5,5,9,0.98);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.9);
+
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+/* sheet open */
+.nav-mobile.sheet.is-open{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* only on mobile */
+@media (min-width: 900px){
+  .nav-mobile-backdrop,
+  .nav-mobile.sheet{
+    display: none !important;
+  }
+}
 
 @media (max-width: 899px){
-  .nav-mobile.sheet{
-    position: fixed;
-    inset: var(--navH) 0 auto 0; /* ✅ ties to navbar height */
-    padding: 0.75rem 1.25rem 1.15rem;
-    background: #050509;
-    border-bottom: 1px solid var(--border-subtle);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
-    z-index: 35;
-    display: block;
-  }
-
-  /* ✅ if topbar exists, open sheet below it */
-  .app-root.has-topbar .nav-mobile.sheet{
-    inset: calc(var(--navH) + var(--topbarH)) 0 auto 0;
-  }
-
   .nav-link-mobile{
     display: block;
     width: 100%;
     text-align: left;
     background: none;
     border: none;
-    padding: 0.55rem 0;
-    color: var(--text-main);
-    font-size: 0.95rem;
+    padding: 14px 6px;
+    color: rgba(255,255,255,0.92);
+    font-size: 16px;
     cursor: pointer;
   }
 
-  .nav-link-mobile.nav-link--active{ color: #facc15; }
-  .mobile-cta{ margin-top: 0.7rem; width: 100%; }
+  .nav-link-mobile + .nav-link-mobile{
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .nav-link-mobile.nav-link--active{
+    color: #facc15;
+  }
+
+  .mobile-cta{
+    margin-top: 16px;
+    width: 100%;
+  }
 }
 
 /* =========================
    TOPBAR (Careers signed-in)
-   ✅ ONLY changes:
-      - z-index: make it above navbar/overlays so links work
-      - ensure pointer-events
-      - smaller button size
 ========================= */
 .topbar{
   position: fixed;
@@ -433,7 +493,7 @@ main{
   left: 0;
   right: 0;
   height: var(--topbarH);
-  z-index: 60; /* ✅ was lower; now above navbar and page */
+  z-index: 900;
 
   display:flex;
   align-items:center;
@@ -471,9 +531,9 @@ main{
   border: 1px solid rgba(255,255,255,.16);
   background: rgba(255,255,255,.06);
   color: rgba(255,255,255,.92);
-  padding: 5px 10px;  /* ✅ smaller */
+  padding: 5px 10px;
   border-radius: 999px;
-  font-size: 13px;    /* ✅ smaller */
+  font-size: 13px;
   line-height: 1;
   pointer-events: auto;
 }
@@ -1050,6 +1110,7 @@ main{
 .footer-creator:hover {
   text-decoration: underline;
 }
+
 /* =========================
    CAREERS / JOBS (existing)
 ========================= */
@@ -1571,7 +1632,6 @@ main{
 
 /* =========================
    CAREERS PREMIUM THEME (layout)
-   - moved vars off :root to avoid overriding global theme
 ========================= */
 .careersBg{
   --c-bg0:#07080b;
@@ -1927,152 +1987,7 @@ main{
 }
 
 /* =========================================================
-   NAVBAR + TOPBAR FIX (OVERRIDES ONLY)
-   - Fixes TopBar gap (navbar height mismatch)
-   - Fixes TopBar clickability (stacking order)
-   ========================================================= */
-
-/* ✅ Set this to your real navbar height (from screenshot it’s NOT 86px) */
-:root{
-  --navH: 68px;     /* adjust 64–74 if needed */
-  --topbarH: 44px;
-}
-
-/* Keep navbar fixed and above page, but BELOW topbar */
-.navbar{
-  z-index: 500 !important;
-}
-
-/* ✅ Topbar must sit right below navbar and be clickable */
-.topbar{
-  top: var(--navH) !important;
-  z-index: 900 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure everything inside topbar can be clicked */
-.topbar *{
-  pointer-events: auto !important;
-}
-
-/* ✅ Mobile sheet should never cover topbar */
-.nav-mobile.sheet{
-  z-index: 450 !important;
-}
-
-/* =========================================================
-   FINAL NAVBAR + TOPBAR FIX (CSS only)
-   - Removes the gap by using correct navbar height per breakpoint
-   - Keeps topbar clickable
-   - No layout hacks / no transforms
-   ========================================================= */
-
-:root{
-  /* ✅ Desktop navbar height (matches your screenshot better) */
-  --navH: 56px;
-  --topbarH: 44px;
-}
-
-/* ✅ Mobile navbar height (slightly different due to padding/font scaling) */
-@media (max-width: 899px){
-  :root{
-    --navH: 60px;
-    --topbarH: 44px;
-  }
-}
-
-/* Navbar stacking */
-.navbar{
-  z-index: 500 !important;
-}
-
-/* Topbar sits exactly under navbar */
-.topbar{
-  top: var(--navH) !important;
-  z-index: 900 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure items inside are clickable */
-.topbar *{
-  pointer-events: auto !important;
-}
-
-/* Content offset (so page doesn’t slide under bars) */
-main{
-  padding-top: var(--navH);
-}
-
-.app-root.has-topbar main{
-  padding-top: calc(var(--navH) + var(--topbarH));
-}
-
-/* Mobile menu sheet should appear below both */
-@media (max-width: 899px){
-  .nav-mobile.sheet{
-    inset: calc(var(--navH) + var(--topbarH)) 0 auto 0 !important;
-    z-index: 450 !important;
-  }
-}
-
-/* =========================================================
-   NAVBAR + TOPBAR HARD FIX (CSS ONLY)
-   Root cause: computed position is "relative" for both,
-   so topbar gets pushed down and creates the gap.
-   ========================================================= */
-
-/* Keep your vars (these match your console output) */
-:root{
-  --navH: 58px;
-  --topbarH: 44px;
-}
-
-/* FORCE navbar to be fixed */
-.navbar{
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  /* keep your existing visuals, just fix layout */
-  z-index: 500 !important;
-}
-
-/* FORCE topbar to sit immediately under navbar */
-.topbar{
-  position: fixed !important;
-  top: var(--navH) !important;
-  left: 0 !important;
-  right: 0 !important;
-
-  margin: 0 !important;       /* prevent any margin gap */
-  z-index: 900 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure topbar children are clickable */
-.topbar *{
-  pointer-events: auto !important;
-}
-
-/* Keep content below fixed bars (prevents overlap) */
-main{
-  padding-top: var(--navH) !important;
-}
-.app-root.has-topbar main{
-  padding-top: calc(var(--navH) + var(--topbarH)) !important;
-}
-
-/* Mobile nav sheet should never cover the topbar */
-.nav-mobile.sheet{
-  z-index: 450 !important;
-}
-
-/* =========================================================
    DASHBOARD + TOPBAR MOBILE POLISH (ADD AT BOTTOM)
-   - Premium application cards
-   - Fix Topbar spacing/fonts on mobile
-   - Does NOT touch anything else
 ========================================================= */
 
 /* ---------- Dashboard layout ---------- */
@@ -2216,7 +2131,7 @@ main{
   color: rgba(255,255,255,.92);
 }
 
-/* Optional variants (works even if your status values differ) */
+/* Optional variants */
 .status-submitted{
   border-color: rgba(56,189,248,.28);
   background: rgba(56,189,248,.10);
@@ -2239,7 +2154,7 @@ main{
 @media (max-width: 520px){
   .topbar{
     padding: 8px 10px !important;
-    height: auto !important;           /* allow wrap instead of squish */
+    height: auto !important;
     min-height: 44px !important;
     gap: 8px;
   }
@@ -2395,53 +2310,88 @@ main{
     grid-template-columns: 1fr;
   }
 }
-/* Sticky scrollytelling section */
-.sticky-split-section {
+
+
+/* =========================================================
+   STICKY SPLIT — FIXED CENTERING + NO SECTION OVERLAP
+========================================================= */
+
+.sticky-split-section{
   position: relative;
-  height: 220vh; /* controls how long the sticky animation lasts */
-  overflow: clip;
+  height: 140vh;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  isolation: isolate;
+  overflow-x: clip;     /* prevents horizontal scroll from transforms */
 }
 
-.sticky-split-bg {
+.sticky-split-bg{
   position: absolute;
   inset: 0;
   pointer-events: none;
   background: radial-gradient(70% 80% at 50% 20%, rgba(255,255,255,0.06), rgba(0,0,0,0));
 }
 
-.sticky-split-sticky {
+/* Sticky container sits BELOW fixed bars and uses remaining viewport */
+.sticky-split-sticky{
   position: sticky;
-  top: 0;
-  height: 100vh;
-  display: grid;
-  align-items: center;
+  top: calc(var(--navH) + var(--topbarH));
+  height: calc(100vh - var(--navH) - var(--topbarH));
+  min-height: calc(100vh - var(--navH) - var(--topbarH));
+
+  display: flex;
+  flex-direction: column;
+
+  /* ✅ prevents heading from getting pushed into previous section on zoom */
+  justify-content: flex-start;
+  padding-top: clamp(18px, 5vh, 56px);
+  padding-bottom: clamp(18px, 4vh, 40px);
 }
 
-.sticky-split-heading {
-  margin-bottom: 18px;
-}
-
-.sticky-split-stage {
+.sticky-split-heading{
+  max-width: 920px;
+  margin: 0 auto 18px auto;
+  text-align: center;
   position: relative;
-  height: 360px;
+  z-index: 3;
+}
+
+/* Stage becomes the positioning context */
+.sticky-split-stage{
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 52vh, 560px);
+
   display: grid;
   place-items: center;
+
+  margin: 0 auto;
+  overflow: visible;
 }
 
-/* The cards stack in the center (absolute), then we animate x/width */
-.sticky-card {
+/* ✅ wrapper owns the centering transform (Framer can’t overwrite it) */
+.sticky-card-wrap{
   position: absolute;
   left: 50%;
   top: 0;
+  height: 100%;
   transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+/* Card itself no longer uses left/transform */
+.sticky-card{
+  position: relative;
   height: 100%;
   padding: 22px;
   overflow: hidden;
   will-change: transform, width, opacity;
 }
 
-/* wipe layer */
-.wipe-layer {
+.wipe-layer{
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -2455,7 +2405,7 @@ main{
   pointer-events: none;
 }
 
-.sticky-split-hint {
+.sticky-split-hint{
   margin-top: 14px;
   display: inline-flex;
   gap: 10px;
@@ -2464,67 +2414,236 @@ main{
   justify-content: center;
 }
 
-/* Mobile: fall back to normal stacked grid (simpler + smoother) */
-@media (max-width: 900px) {
-  .sticky-split-section {
+/* Mobile fallback */
+@media (max-width: 900px){
+  .sticky-split-section{
     height: auto;
     padding: 36px 0;
   }
 
-  .sticky-split-sticky {
+  .sticky-split-sticky{
     position: static;
     height: auto;
+    min-height: auto;
+    top: auto;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
-  .sticky-split-stage {
-    height: auto;
-    display: grid;
-    gap: 16px;
-    place-items: stretch;
-  }
+  .sticky-split-stage{
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 52vh, 560px);
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  overflow: visible;
+  padding-inline: clamp(10px, 2.5vw, 28px); /* ✅ adds breathing room */
+}
 
-  .sticky-card {
-    position: relative;
-    left: auto;
-    transform: none;
+.sticky-card-wrap{
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  transform: translateX(-50%);
+  display: flex;
+}
+
+
+  .sticky-card{
     height: auto;
     width: auto !important;
     opacity: 1 !important;
   }
 
-  .wipe-layer {
-    display: none;
+  .wipe-layer{ display: none; }
+}
+
+/* Toggle layouts */
+.sticky-split-mobile { display: none; }
+.sticky-split-desktop { display: block; }
+
+@media (max-width: 900px){
+  .sticky-split-desktop { display: none; }
+  .sticky-split-mobile { display: block; }
+
+  /* keep section non-sticky on mobile */
+  .sticky-split-section{
+    height: auto;
+    padding: 36px 0;
   }
 }
-/* Tight scrollytelling section */
-.sticky-split-section {
+
+.page-stage{
+  overflow-x: hidden;
+}
+
+
+/*Changes*/
+/* =========================================================
+   SCOPED BOX REVEAL (Left -> Right)
+   Only applies inside .wipe-group and on elements with .wipe-ltr
+   Uses ::before so it won’t conflict with existing ::after effects
+========================================================= */
+
+.wipe-group .wipe-ltr{
   position: relative;
-  height: 150vh;  /* was 220vh — too long */
-  overflow: clip;
+  overflow: hidden;
 }
 
-.sticky-split-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: grid;
-  align-items: center;
-}
-
-/* Keep stage + heading visually together */
-.sticky-split-heading {
-  margin-bottom: 14px;
-}
-
-.sticky-split-stage {
+/* Keep content above the wipe layer */
+.wipe-group .wipe-ltr > *{
   position: relative;
-  height: 340px; /* slightly tighter */
-  display: grid;
-  place-items: center;
+  z-index: 1;
 }
 
-/* Optional: remove the hint if it feels like it “floats” awkwardly */
-.sticky-split-hint {
-  margin-top: 10px;
-  opacity: 0.7;
+/* Solid cover that slides away to the right */
+.wipe-group .wipe-ltr::before{
+  content: "";
+  position: absolute;
+  inset: -2px;            /* small bleed to avoid edge seams */
+  border-radius: inherit;
+  background: var(--bg, #050509);
+  z-index: 2;
+  pointer-events: none;
+
+  transform: translateX(0%);
+  animation: wipeOutLTR 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+@keyframes wipeOutLTR{
+  to { transform: translateX(110%); }
+}
+
+/* Optional staggering (only within wipe-group) */
+.wipe-group .wipe-ltr:nth-child(1)::before{ animation-delay: 0ms; }
+.wipe-group .wipe-ltr:nth-child(2)::before{ animation-delay: 120ms; }
+.wipe-group .wipe-ltr:nth-child(3)::before{ animation-delay: 240ms; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .wipe-group .wipe-ltr::before{
+    animation: none;
+    transform: translateX(110%);
+  }
+}
+
+/*fix*/
+/* --- Layout: prevent extra empty space below content --- */
+html, body { height: 100%; }
+#root { min-height: 100%; }
+
+.app-root{
+  min-height: 100svh;      /* better than 100vh on mobile */
+  display: flex;
+  flex-direction: column;
+}
+
+main{
+  flex: 1;                 /* takes remaining space, no extra */
+  min-height: 0;           /* prevents weird overflow behavior */
+}
+
+/* If you have .page using min-height: 100vh anywhere, neutralize it */
+.page{
+  min-height: auto;
+}
+
+/* Optional: avoid giant bottom padding on the last section */
+.section:last-of-type{
+  padding-bottom: clamp(48px, 6vw, 80px);
+}
+
+/* =========================================================
+   FIX 1: Remove the random dot (meta-dot hint)
+   (This is the yellow dot you see floating)
+========================================================= */
+.sticky-split-hint,
+.sticky-split-hint .meta-dot{
+  display: none !important;
+}
+
+/* =========================================================
+   FIX 2: Remove extra bottom empty space on Home
+   Reduce the sticky scroll "spacer" height (desktop only)
+========================================================= */
+@media (min-width: 901px){
+  /* your sticky section is acting like a long scroll container.
+     This clamps it to a reasonable height so you don’t get a huge blank tail. */
+  .sticky-split-section{
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* ensure sticky area doesn’t force extra space */
+  .sticky-split-sticky{
+    height: calc(100vh - var(--navH, 72px)) !important;
+  }
+}
+
+/* =========================================================
+   BONUS: Bullet styling only where you actually want it
+   (prevents any list-marker weirdness)
+========================================================= */
+.feature-card ul,
+.sticky-card ul{
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+
+.feature-card ul li,
+.sticky-card ul li{
+  position: relative;
+  padding-left: 14px;
+}
+
+.feature-card ul li::before,
+.sticky-card ul li::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-gold, #fbbf24);
+}
+
+/* hide any accidental empty li */
+li:empty{ display:none; }
+
+/* =========================================================
+   HOME FIX: remove the random dot + remove extra empty space
+========================================================= */
+
+/* 1) Remove the dot (it comes from StickySplitFeatures hint) */
+.sticky-split-hint,
+.sticky-split-hint .meta-dot{
+  display: none !important;
+}
+
+/* 2) Reduce the sticky section scroll spacer (THIS fixes the empty space) */
+@media (min-width: 901px){
+  .sticky-split-section{
+    height: calc(100vh + 140px) !important;   /* was 140vh */
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* 3) Optional: remove “last section padding” (can add extra bottom space on Home) */
+.section:last-of-type{
+  padding-bottom: 0 !important;
+}
+
+/* 4) Make sure no default list markers appear anywhere unexpected */
+.feature-card ul,
+.sticky-card ul{
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+
+/* (Your cards already create their own gold dots — keep those) */

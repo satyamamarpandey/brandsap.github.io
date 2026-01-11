@@ -5,11 +5,16 @@ export default function About() {
         <div className="section-heading section-heading-center">
           <div className="pill pill-soft">About Brandsap</div>
           <h2>Design studio for modern product teams.</h2>
-          <p>Brandsap is built by Satyam and focuses on branding, strategy, and digital execution.</p>
+          <p>
+            Brandsap is built by Satyam and focuses on branding, strategy, and
+            digital execution.
+          </p>
         </div>
 
-        <div className="card-grid">
-          <article className="showcase-card glass-card">
+        {/* ✅ add wipe-group here */}
+        <div className="card-grid wipe-group">
+          {/* ✅ add wipe-ltr to each box */}
+          <article className="showcase-card glass-card wipe-ltr">
             <div className="card-label">Approach</div>
             <h3>Strategy first</h3>
             <p>
@@ -18,7 +23,7 @@ export default function About() {
             </p>
           </article>
 
-          <article className="showcase-card glass-card">
+          <article className="showcase-card glass-card wipe-ltr">
             <div className="card-label">Collaboration</div>
             <h3>Embed with your team</h3>
             <p>
@@ -27,7 +32,7 @@ export default function About() {
             </p>
           </article>
 
-          <article className="showcase-card glass-card">
+          <article className="showcase-card glass-card wipe-ltr">
             <div className="card-label">Outcome</div>
             <h3>Systems, not one-offs</h3>
             <p>

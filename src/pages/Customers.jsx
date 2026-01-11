@@ -32,9 +32,11 @@ export default function Customers() {
           </p>
         </div>
 
-        <div className="card-grid">
+        {/* ✅ add wipe-group here */}
+        <div className="card-grid wipe-group">
           {CUSTOMERS.map((c) => (
-            <article key={c.name} className="showcase-card glass-card">
+            // ✅ add wipe-ltr here
+            <article key={c.name} className="showcase-card glass-card wipe-ltr">
               <div className="card-label">{c.role}</div>
               <h3>{c.name}</h3>
               <p>{c.quote}</p>

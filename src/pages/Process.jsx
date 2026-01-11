@@ -30,9 +30,11 @@ export default function Process() {
           </p>
         </div>
 
-        <div className="card-grid">
+        {/* ✅ add wipe-group here */}
+        <div className="card-grid wipe-group">
           {STEPS.map((step, index) => (
-            <article key={step.title} className="showcase-card glass-card">
+            // ✅ add wipe-ltr here
+            <article key={step.title} className="showcase-card glass-card wipe-ltr">
               <div className="card-label">
                 Step {index + 1 < 10 ? `0${index + 1}` : index + 1}
               </div>
