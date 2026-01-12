@@ -5,21 +5,21 @@ import { motion } from "framer-motion";
 const CARDS = [
   {
     id: "strategy",
-    label: "Purpose-built",
-    title: "Built for product-led brands",
-    body: "Position your brand around outcomes, not buzzwords. Clear messaging, sharp visuals, and interfaces that feel instantly familiar.",
+    label: "Local-first clarity",
+    title: "Make your offer instantly clear",
+    body: "We help people understand what you do, who it is for, and why they should choose you. Clear messaging that builds trust and drives inquiries.",
   },
   {
     id: "design",
-    label: "Fast execution",
-    title: "Move from idea to launch quickly",
-    body: "We design and build in parallel – so you can review live prototypes early, iterate fast, and launch on time.",
+    label: "Credibility upgrade",
+    title: "Look premium everywhere",
+    body: "A consistent visual system across website, e-cards, and social so your brand feels reliable from the first click and stays recognizable.",
   },
   {
     id: "digital",
-    label: "Crafted detail",
-    title: "Delight in the micro-interactions",
-    body: "Hover states, transitions, and micro-copy are treated as first-class citizens, not afterthoughts.",
+    label: "Growth setup",
+    title: "Turn traffic into customers",
+    body: "We build fast pages, lead capture, and tracking so you can run offers, campaigns, and ads with confidence and improve results month after month.",
   },
 ];
 
@@ -40,12 +40,14 @@ export default function ShowcaseSection({ activeId, onSelect }) {
     <div className="container">
       <div className="section-heading">
         <div>
-          <div className="pill pill-outline">Made for modern teams</div>
-          <h2>Product-grade brand experiences</h2>
+          <div className="pill pill-outline">Built for local & mid brands</div>
+          <h2>Online presence that looks trusted and grows.</h2>
         </div>
+
         <p>
-          Brandsap combines product thinking with visual design. The result is a
-          website that feels as polished and responsive as your product.
+          Brandsap helps businesses show up professionally online with a complete setup:
+          website, e-cards, social profiles, campaigns, and tracking. Clear deliverables,
+          clean execution, and steady improvement.
         </p>
       </div>
 
@@ -59,11 +61,8 @@ export default function ShowcaseSection({ activeId, onSelect }) {
         {CARDS.map((card) => {
           const isActive = activeId === card.id;
 
-          // When active, we "remove" the source card so the shared element can
-          // travel to the FeatureSection (same layoutId, different place).
-          if (isActive) {
-            return <div key={card.id} className="showcase-placeholder" />;
-          }
+          // When active, we "remove" the source card so the shared element can travel
+          if (isActive) return <div key={card.id} className="showcase-placeholder" />;
 
           return (
             <motion.article
@@ -77,7 +76,7 @@ export default function ShowcaseSection({ activeId, onSelect }) {
               tabIndex={0}
               onKeyDown={(e) => e.key === "Enter" && onSelect(card.id)}
             >
-              {/* Optional: wipe layer (looks premium) */}
+              {/* Premium wipe */}
               <motion.span
                 className="card-wipe"
                 initial={{ scaleX: 1 }}
@@ -95,10 +94,10 @@ export default function ShowcaseSection({ activeId, onSelect }) {
                   className="text-link"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate("/process");
+                    navigate("/services");
                   }}
                 >
-                  Learn more <span>↗</span>
+                  See what’s included <span>↗</span>
                 </button>
 
                 <button
