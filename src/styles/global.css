@@ -948,11 +948,15 @@ main {
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
   box-shadow: var(--shadow-soft);
   border-color: #3f424e;
   background: #11121a;
 }
+
+.glass-card:not(.sticky-card):hover {
+  transform: translateY(-4px);
+}
+
 
 .card-grid {
   display: grid;
@@ -2254,16 +2258,14 @@ main {
 }
 
 @keyframes heroMainTilt {
-
-  0%,
-  100% {
-    transform: rotate3d(0, 0, 1, 0deg);
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
   }
-
   50% {
-    transform: rotate3d(0, 0, 1, -1.2deg);
+    transform: translate3d(0, -8px, 0);
   }
 }
+
 
 /* Tectonic Left */
 @keyframes tectonic-left {
@@ -2789,6 +2791,37 @@ main {
   justify-content: center;
 }
 
+/* =========================================================
+   STICKY SPLIT — hover stability fix (Framer Motion safe)
+========================================================= */
+
+/* ✅ IMPORTANT: do not CSS-transition transform on framer-motion cards */
+.sticky-split-stage .sticky-card.glass-card {
+  transition:
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+/* Keep sticky cards on top when hovered (prevents hover flicker) */
+.sticky-split-stage .sticky-card-wrap:hover {
+  z-index: 50 !important;
+}
+/* StickySplit: allow hover styling, but NEVER transform (Framer owns transform) */
+.sticky-split-stage .sticky-card {
+  transition:
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast) !important;
+}
+
+.sticky-split-stage .sticky-card:hover {
+  /* Only visual polish */
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.50);
+  background: #11121a;
+}
+
 /* Mobile fallback */
 @media (max-width: 900px) {
   .sticky-split-section {
@@ -3254,7 +3287,7 @@ main,
 
 /* Make main respect a smaller top pad (wins over earlier main rules) */
 main {
-  padding-top: calc(var(--navH)  var(--topbarH) + var(--pagePadTop)) !important;
+  padding-top: calc(var(--navH) + var(--topbarH) + var(--pagePadTop)) !important;
   padding-bottom: var(--pagePadBottom) !important;
 }
 
@@ -3332,15 +3365,17 @@ a:hover {
 }
 
 /* Hover feels softer and more “expensive” */
-.glass-card:hover,
+/* Hover feels softer and more “expensive” (EXCLUDE sticky split cards) */
+.glass-card:not(.sticky-card):hover,
 .showcase-card:hover,
-.feature-card:hover,
+.feature-card:not(.sticky-card):hover,
 .jobCard:hover,
 .app-card:hover {
   transform: translateY(-3px) !important;
   border-color: var(--lux-border-2) !important;
   box-shadow: 0 26px 90px rgba(0, 0, 0, 0.50) !important;
 }
+
 
 /* Buttons: slightly more refined highlight */
 .nav-primary,
@@ -3405,3 +3440,4 @@ a:hover {
   background: rgba(250, 204, 21, 0.22);
   color: rgba(255, 255, 255, 0.98);
 }
+
