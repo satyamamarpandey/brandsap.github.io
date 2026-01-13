@@ -31,6 +31,10 @@
   /* set to your real navbar height from DevTools */
   --topbarH: 0px;
   /* default 0 unless .app-root.has-topbar is present */
+
+    --navH: 76px;
+
+  --topbarH: 0px;
 }
 
 /* If TopBar exists on page, enable its height */
@@ -3872,4 +3876,161 @@ a:hover {
   background: rgba(250, 204, 21, 0.22);
   color: rgba(255, 255, 255, 0.98);
 }
+
+/* Navbar should have no bottom margin */
+.navbar,
+.siteNav,
+.nav {
+  margin-bottom: 0 !important;
+}
+
+/* Topbar must start exactly at the bottom of navbar */
+.topbar {
+  position: fixed;              /* or sticky if you use sticky */
+  left: 0;
+  right: 0;
+  top: var(--navH) !important;  /* this removes the gap */
+  margin-top: 0 !important;
+  border-top: 0 !important;
+}
+
+/* Optional: ensure there is no extra padding between them in wrappers */
+.topbarWrap,
+.topbarRow,
+.headerWrap {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* =========================================================
+   FIX: Navbar content centered/cluttered
+   Cause: .navbar became display:flex, centering the .container
+========================================================= */
+
+.navbar{
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;  /* top:0 left:0 right:0 */
+  width: 100% !important;
+  z-index: 10000 !important;
+
+  /* ✅ important: NOT a flex parent */
+  display: block !important;
+
+  height: var(--navH) !important;
+  padding: 0 !important;
+}
+
+/* make sure the inner container spans full width */
+.navbar .container{
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* keep items aligned inside */
+.navbar-inner{
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Topbar flush under navbar */
+.topbar{
+  position: fixed !important;
+  inset: var(--navH) 0 auto 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
+}
+
+/* Content offset */
+main{
+  padding-top: calc(var(--navH) + var(--topbarH)) !important;
+}
+
+/* =========================
+   APPLY PAGE — mobile side padding
+========================= */
+
+/* If your page wrapper uses .applyWrap (it does in your CSS) */
+.applyWrap{
+  width: min(980px, calc(100% - 32px)); /* keeps 16px space each side */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Make it a bit roomier on very small screens */
+@media (max-width: 520px){
+  .applyWrap{
+    width: min(980px, calc(100% - 24px)); /* 12px each side */
+  }
+}
+
+/* =========================
+   JobApply — mobile signout button fix
+   (override .jobBack margins + place top-right)
+========================= */
+
+.applyWrap{
+  position: relative; /* anchor for absolute signout */
+}
+
+@media (max-width: 520px){
+  .applySignOut{
+    position: absolute !important;
+    top: 12px;
+    right: 12px;
+    z-index: 5;
+
+    margin: 0 !important;        /* kills jobBack's margin-left/top */
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    border-radius: 999px !important;
+  }
+
+  /* add room so Apply title doesn’t collide */
+  .applyHeader{
+    padding-top: 28px;
+  }
+}
+
+/* Mobile CTA spacing inside StickySplit cards */
+@media (max-width: 900px) {
+  .sticky-mobile-cta {
+    margin-top: 14px !important;   /* space ABOVE Start building */
+    padding-top: 10px !important;  /* optional extra breathing room */
+  }
+
+  /* ensure the button doesn't "stick" to the content above */
+  .sticky-mobile-cta .primary-btn {
+    display: block;
+    margin-top: 0 !important;
+  }
+}
+
+/* PRICING: keep buttons aligned across cards */
+.feature-grid .feature-card{
+  display: flex;
+  flex-direction: column;
+}
+
+/* push the CTA row to the bottom of the card */
+.feature-grid .feature-card .pricing-actions{
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+/* CUSTOMERS: keep tag pills aligned at same baseline */
+.card-grid .customer-card{
+  display: flex;
+  flex-direction: column;
+}
+
+/* push tags to the bottom of each card */
+.card-grid .customer-card .customer-tags{
+  margin-top: auto;
+  padding-top: 14px; /* small breathing room */
+}
+
+
 

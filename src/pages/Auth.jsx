@@ -7,11 +7,7 @@ export default function Auth() {
   const nav = useNavigate();
   const loc = useLocation();
 
-  // ✅ SAFER nextPath:
-  // - decode once
-  // - allow only internal "/" paths
-  // - prevent redirecting back to auth/forgot/reset to avoid infinite "next=next=next..."
-  // - cap length to avoid nested URLs exploding
+  // nextPath (same as you had)
   const nextPath = useMemo(() => {
     const raw = new URLSearchParams(loc.search).get("next");
     const fallback = "/careers";
@@ -27,7 +23,6 @@ export default function Auth() {
 
     if (!decoded.startsWith("/") || decoded.startsWith("//")) return fallback;
 
-    // 🚫 Prevent redirect loops to auth pages
     if (
       decoded.startsWith("/careers/auth") ||
       decoded.startsWith("/forgot-password") ||
@@ -36,7 +31,6 @@ export default function Auth() {
       return fallback;
     }
 
-    // 🚫 Prevent huge nested next values
     if (decoded.length > 300) return fallback;
 
     return decoded;
@@ -67,7 +61,22 @@ export default function Auth() {
     nav(nextPath, { replace: true });
   };
 
-  // ✅ Inactivity banner (optional)
+  // Non-blocking helper: returns true/false if function works, or null if unreachable
+  const safeUserExistsCheck = async (em) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("check-user-exists", {
+        body: { email: em },
+      });
+      if (error) throw error;
+      return !!data?.exists;
+    } catch (e) {
+      // If edge function is not deployed / blocked / env missing, do not block auth flow
+      console.warn("check-user-exists unavailable, skipping pre-check:", e?.message || e);
+      return null;
+    }
+  };
+
+  // Inactivity banner
   useEffect(() => {
     const reason = sessionStorage.getItem("auth_reason");
     if (reason === "inactivity") {
@@ -76,7 +85,7 @@ export default function Auth() {
     }
   }, []);
 
-  // ✅ Session check on load + auth listener
+  // Session check + listener
   useEffect(() => {
     let mounted = true;
 
@@ -100,7 +109,7 @@ export default function Auth() {
     };
   }, []);
 
-  // ✅ If already signed in (refresh/back), redirect immediately (no intermediate page)
+  // If already signed in
   useEffect(() => {
     if (!checkingSession && sessionUser) {
       continueNow();
@@ -108,23 +117,17 @@ export default function Auth() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkingSession, sessionUser]);
 
-  /**
-   * ✅ OAuth guard:
-   * - If user clicked Google in "signin" mode and account was newly created, delete it & show error.
-   * - Otherwise, redirect immediately.
-   */
+  // OAuth guard (same logic)
   useEffect(() => {
     const run = async () => {
-      const intent = sessionStorage.getItem("oauth_intent"); // signin | signup
+      const intent = sessionStorage.getItem("oauth_intent");
       const startedAt = Number(sessionStorage.getItem("oauth_started_at") || "0");
-
       if (!intent || !sessionUser) return;
 
       try {
         const createdAtMs = Date.parse(sessionUser.created_at || "");
         const wasNew = startedAt && createdAtMs && createdAtMs >= startedAt - 2000;
 
-        // ❌ "Sign in with Google" should NOT create a new account
         if (intent === "signin" && wasNew) {
           const { error: delErr } = await supabase.functions.invoke("delete-user", {
             body: { user_id: sessionUser.id },
@@ -136,13 +139,12 @@ export default function Auth() {
           if (delErr) {
             setErr("Account validation failed. Please try again or use email sign-up.");
           } else {
-            setErr("Account doesn’t exist with this Google email. Please create an account first.");
+            setErr("Account does not exist with this Google email. Please create an account first.");
             setMode("signup");
           }
           return;
         }
 
-        // ✅ Valid case → redirect
         continueNow();
       } catch {
         try {
@@ -160,7 +162,7 @@ export default function Auth() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionUser]);
 
-  // ✅ Email/password submit
+  // Email/password submit
   const submit = async (e) => {
     e.preventDefault();
     clearMsgs();
@@ -169,15 +171,19 @@ export default function Auth() {
     try {
       const em = cleanEmail(email);
 
-      if (mode === "signup") {
-        // ✅ Signup should fail if user exists
-        const { data: existsData, error: existsErr } = await supabase.functions.invoke(
-          "check-user-exists",
-          { body: { email: em } }
-        );
-        if (existsErr) throw existsErr;
+      if (!em) {
+        setErr("Please enter a valid email.");
+        return;
+      }
+      if (!password || password.length < 6) {
+        setErr("Password should be at least 6 characters.");
+        return;
+      }
 
-        if (existsData?.exists) {
+      if (mode === "signup") {
+        // Try edge pre-check but do not block if it fails
+        const exists = await safeUserExistsCheck(em);
+        if (exists === true) {
           setErr("Account already exists with this email. Please sign in.");
           setMode("signin");
           return;
@@ -189,24 +195,28 @@ export default function Auth() {
           options: { data: { full_name: name.trim() } },
         });
 
-        if (error) throw error;
+        if (error) {
+          const msg = (error.message || "").toLowerCase();
+          if (msg.includes("already") || msg.includes("registered") || msg.includes("exists")) {
+            setErr("Account already exists with this email. Please sign in.");
+            setMode("signin");
+            return;
+          }
+          throw error;
+        }
 
-        // If confirm email is ON
+        // Email confirm ON
         if (!data?.session) {
           setInfoMsg("Account created. Please check your email to confirm, then sign in.");
+          setMode("signin");
           return;
         }
 
         continueNow();
       } else {
-        // ✅ Signin should only work for existing accounts (explicit check)
-        const { data: existsData, error: existsErr } = await supabase.functions.invoke(
-          "check-user-exists",
-          { body: { email: em } }
-        );
-        if (existsErr) throw existsErr;
-
-        if (!existsData?.exists) {
+        // Try edge pre-check but do not block if it fails
+        const exists = await safeUserExistsCheck(em);
+        if (exists === false) {
           setErr("No account found with this email. Please create an account.");
           setMode("signup");
           return;
@@ -218,8 +228,13 @@ export default function Auth() {
         });
 
         if (error) {
-          setErr("Incorrect password. Please try again.");
-          return;
+          const msg = (error.message || "").toLowerCase();
+          // Supabase often returns "Invalid login credentials" for both wrong password and non-existing user
+          if (msg.includes("invalid login") || msg.includes("credentials")) {
+            setErr("Invalid email or password. Please try again.");
+            return;
+          }
+          throw error;
         }
 
         if (!data?.session) throw new Error("No session returned");
@@ -232,7 +247,7 @@ export default function Auth() {
     }
   };
 
-  // ✅ OAuth start (Google only)
+  // OAuth start
   const oauth = async () => {
     clearMsgs();
     setLoading(true);
@@ -241,8 +256,6 @@ export default function Auth() {
       sessionStorage.setItem("oauth_intent", mode);
       sessionStorage.setItem("oauth_started_at", String(Date.now()));
 
-      // ✅ IMPORTANT: do NOT forward nested ?next=... when already on auth
-      // We'll keep redirectTo clean to avoid compounding query strings.
       const redirectTo = `${window.location.origin}/careers/auth`;
 
       const { error } = await supabase.auth.signInWithOAuth({
@@ -267,7 +280,7 @@ export default function Auth() {
       <div className="page">
         <section className="container" style={{ padding: "56px 0", maxWidth: 520 }}>
           <div className="authCard">
-            <div className="jobMuted">Checking session…</div>
+            <div className="jobMuted">Checking session...</div>
           </div>
         </section>
       </div>
@@ -321,11 +334,7 @@ export default function Auth() {
               disabled={loading}
               style={{ cursor: loading ? "not-allowed" : "pointer" }}
             >
-              {loading
-                ? "Redirecting…"
-                : mode === "signup"
-                ? "Create with Google"
-                : "Continue with Google"}
+              {loading ? "Redirecting..." : mode === "signup" ? "Create with Google" : "Continue with Google"}
             </button>
 
             <div className="authDivider">
@@ -371,12 +380,17 @@ export default function Auth() {
             </div>
 
             <button className="authPrimaryBtn" disabled={loading} type="submit">
-              {loading ? "Please wait…" : mode === "signup" ? "Create account" : "Sign in"}
+              {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Sign in"}
             </button>
 
             <div
               className="authBottom"
-              style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                alignItems: "center",
+              }}
             >
               {mode === "signin" ? (
                 <>
@@ -424,3 +438,4 @@ export default function Auth() {
     </div>
   );
 }
+

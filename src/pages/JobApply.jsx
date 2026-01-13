@@ -454,7 +454,7 @@ export default function Apply() {
               </div>
             </div>
 
-            <button type="button" className="jobBack" onClick={signOut} disabled={loading} title="Sign out">
+            <button type="button" className="jobBack applySignOut" onClick={signOut} disabled={loading} title="Sign out">
               {loading ? "Signing out…" : "Sign out"}
             </button>
           </div>
@@ -514,18 +514,17 @@ export default function Apply() {
               </div>
 
               <div className="authField">
-                <label>Portfolio *</label>
+                <label>Portfolio</label>
                 <input
                   value={portfolio}
                   onChange={(e) => setPortfolio(e.target.value)}
                   placeholder="https://..."
-                  required
                   disabled={status === "submitted"}
                 />
               </div>
 
               <div className="authField applySpan2">
-                <label>Cover letter *</label>
+                <label>Why do you think you're a good fit for this role?*</label>
                 <textarea
                   rows={5}
                   value={coverLetter}
