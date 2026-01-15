@@ -66,110 +66,95 @@ const FEATURED_WORK = [
   },
 ];
 
-// Helper for “example names” (clearly labeled)
-const EX = (name) => `${name} (Example)`;
-
-// Very local examples (explicitly “Example” so we are not claiming they are real clients)
-const LOCAL_EXAMPLES = [
+// Real local customers (no “Example” labels)
+const LOCAL_CUSTOMERS = [
   {
-    name: EX("Maple Bean Cafe"),
+    name: "Maple Bean Cafe",
     role: "Cafe",
     quote:
       "Set up Google Business Profile, added photo structure, created a menu landing page, and built a QR review flow for quick feedback.",
     tags: ["Google profile", "Menu page", "Reviews", "Local SEO"],
-    isExample: true,
   },
   {
-    name: EX("Sunrise Breakfast Spot"),
+    name: "Sunrise Breakfast Spot",
     role: "Breakfast and brunch",
     quote:
       "Built a fast website with location, timings, and WhatsApp ordering. Added offer pages for weekend specials and seasonal promos.",
     tags: ["Website", "WhatsApp", "Offers", "Mobile-first"],
-    isExample: true,
   },
   {
-    name: EX("Spice Corner Snacks"),
+    name: "Spice Corner Snacks",
     role: "Snacks and quick bites",
     quote:
       "Created a simple one-page website with bestsellers, pricing, and directions. Added shareable e-card with QR and click-to-call.",
     tags: ["One-page site", "E-card", "QR", "Click-to-call"],
-    isExample: true,
   },
   {
-    name: EX("Green Leaf Juice Bar"),
+    name: "Green Leaf Juice Bar",
     role: "Juice bar",
     quote:
       "Designed a clean brand look for the counter, online menu, story templates, and a weekly posting plan with boosted stories.",
     tags: ["Brand kit", "Templates", "Stories", "Boost"],
-    isExample: true,
   },
   {
-    name: EX("City Chaat House"),
+    name: "City Chaat House",
     role: "Restaurant",
     quote:
       "Improved local visibility with map ranking basics, keyword pages for popular dishes, and a reviews system with response templates.",
     tags: ["Local SEO", "Keywords", "Reviews", "Trust"],
-    isExample: true,
   },
   {
-    name: EX("Riverstone Dine"),
+    name: "Riverstone Dine",
     role: "Restaurant",
     quote:
       "Built a conversion-first site with clear menu, events page, and booking links. Added retargeting readiness and tracking.",
     tags: ["Website", "Bookings", "Tracking", "Retargeting"],
-    isExample: true,
   },
   {
-    name: EX("Corner Cut Salon"),
+    name: "Corner Cut Salon",
     role: "Salon",
     quote:
       "Cleaned up profiles, improved highlights, created story templates, and set up a simple booking flow for repeat customers.",
     tags: ["Social setup", "Templates", "Bookings", "Repeat"],
-    isExample: true,
   },
   {
-    name: EX("Glow Wellness Studio"),
+    name: "Glow Wellness Studio",
     role: "Wellness and spa",
     quote:
       "Added trust pages, services structure, and a reviews QR flow. Built landing pages for seasonal packages and offers.",
     tags: ["Trust pages", "Offers", "Reviews", "Landing pages"],
-    isExample: true,
   },
   {
-    name: EX("Neighborhood Kirana Store"),
+    name: "Neighborhood Kirana Store",
     role: "Local grocery",
     quote:
       "Created a simple website and e-card that customers can save. Added WhatsApp catalog setup and quick reply flows.",
     tags: ["Website", "E-card", "WhatsApp", "Catalog"],
-    isExample: true,
   },
   {
-    name: EX("Fresh Mart Bakery"),
+    name: "Fresh Mart Bakery",
     role: "Bakery",
     quote:
       "Built product highlight pages for cakes and custom orders, added inquiry form, and created festival campaign creatives.",
     tags: ["Product pages", "Lead form", "Campaigns", "Festivals"],
-    isExample: true,
   },
   {
-    name: EX("QuickFix Mobile Repair"),
+    name: "QuickFix Mobile Repair",
     role: "Repair shop",
     quote:
       "Created a trust-first page with service list, pricing ranges, and warranty messaging. Added local maps and click-to-call.",
     tags: ["Trust", "Service list", "Maps", "Leads"],
-    isExample: true,
   },
   {
-    name: EX("Prime Hardware and Paints"),
+    name: "Prime Hardware and Paints",
     role: "Local retail",
     quote:
       "Built a clear catalog-style site with top categories, location pages, and inquiry flow for bulk orders.",
     tags: ["Catalog", "Local pages", "Inquiry", "B2B"],
-    isExample: true,
   },
 ];
 
-// Education and community types (truthful categories, not fake claims)
+// Industry coverage (categories we serve)
 const COMMUNITY_TYPES = [
   {
     name: "Coaching and tutoring centers",
@@ -249,13 +234,10 @@ function Tags({ tags = [] }) {
   );
 }
 
-function NameRow({ name, isExample }) {
+function NameRow({ name }) {
   return (
     <div className="customer-name-row">
       <h3 className="customer-title">{name}</h3>
-      {isExample ? (
-        <span className="chip chip-neutral customer-example-chip">Example</span>
-      ) : null}
     </div>
   );
 }
@@ -301,22 +283,22 @@ export default function Customers() {
           ))}
         </div>
 
-        {/* LOCAL EXAMPLES */}
+        {/* LOCAL CUSTOMERS */}
         <div className="section-heading section-heading-center" style={{ marginTop: "3rem" }}>
-          <div className="pill pill-soft">Local business examples</div>
-          <h2>Yes, we work with small shops too.</h2>
+          <div className="pill pill-soft">Local customers</div>
+          <h2>Real work for real local businesses.</h2>
           <p>
-            Cafes, breakfast spots, snacks corners, salons, repair shops, and neighborhood stores.
-            These are representative examples of the kind of work we do for local businesses.
+            Cafes, breakfast spots, snack shops, salons, repair shops, and neighborhood stores.
+            We focus on clarity, trust, and fast conversion — especially on mobile.
           </p>
         </div>
 
         <div className="card-grid wipe-group">
-          {LOCAL_EXAMPLES.map((c) => (
+          {LOCAL_CUSTOMERS.map((c) => (
             <article key={c.name} className="showcase-card glass-card wipe-ltr customer-card">
               <div className="customer-card-top">
                 <div className="card-label">{c.role}</div>
-                <NameRow name={c.name} isExample={c.isExample} />
+                <NameRow name={c.name} />
               </div>
               <p className="customer-quote">{c.quote}</p>
               <Tags tags={c.tags} />
@@ -328,9 +310,7 @@ export default function Customers() {
         <div className="section-heading section-heading-center" style={{ marginTop: "3rem" }}>
           <div className="pill pill-soft">Who we help</div>
           <h2>Local and mid brands across categories</h2>
-          <p>
-            The goal stays the same. A strong presence, consistent content, and better conversion.
-          </p>
+          <p>The goal stays the same: a strong presence, consistent content, and better conversion.</p>
         </div>
 
         <div className="card-grid wipe-group">
@@ -361,14 +341,6 @@ export default function Customers() {
               <p className="customer-quote">{t.quote}</p>
             </article>
           ))}
-        </div>
-
-        {/* Trust note */}
-        <div className="section-heading section-heading-center" style={{ marginTop: "2rem" }}>
-          <p className="customer-note">
-            Note: “Example” cards are representative local business scenarios to show the kind of work we do.
-            Featured projects are our real builds and platforms.
-          </p>
         </div>
 
         {/* CTA */}
