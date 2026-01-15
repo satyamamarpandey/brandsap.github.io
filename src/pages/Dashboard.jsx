@@ -85,7 +85,7 @@ export default function Dashboard() {
             const status = (a?.status || "submitted").toLowerCase();
             const applied = a?.created_at
               ? new Date(a.created_at).toLocaleString()
-              : "—";
+              : "-";
 
             return (
               <div key={a.id} className="app-card">

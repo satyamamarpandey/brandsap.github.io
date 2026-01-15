@@ -273,7 +273,7 @@ export default function JobPage() {
 
         <div className="card">
           <h2>Apply now</h2>
-          <p className="muted">Signed in as {me?.email || "—"}</p>
+          <p className="muted">Signed in as {me?.email || "-"}</p>
 
           <form className="form" onSubmit={submit}>
             <label>

@@ -8,9 +8,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Title + Description -->
-  <title>Brandsap – Brand, Strategy & Digital</title>
+  <title>Brandsap | Brand Strategy, Identity & Websites</title>
   <meta name="description"
-    content="Brandsap is a brand and digital studio founded by Satyam Pandey—helping founders and businesses with branding, strategy, design, and high-performance websites." />
+    content="Brandsap is a brand and digital studio founded by Satyam Pandey, helping founders and businesses with branding, strategy, design, and high-performance websites." />
 
   <!-- Canonical -->
   <link rel="canonical" href="https://brandsap.com/" />
@@ -34,6 +34,9 @@
   <meta name="theme-color" content="#0b0b0b" />
   <meta name="msapplication-TileColor" content="#0b0b0b" />
 
+  <!-- ✅ Preload for OG / hero image (LCP boost) -->
+  <link rel="preload" as="image" href="/images/B%20Logo.png" />
+
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Brandsap" />
@@ -45,6 +48,10 @@
   <!-- ✅ OG Image (no /public) -->
   <meta property="og:image" content="https://brandsap.com/images/B%20Logo.png" />
   <meta property="og:image:alt" content="Brandsap logo" />
+
+  <!-- ✅ OG image dimensions (recommended) -->
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -82,12 +89,48 @@
       "logo": "https://brandsap.com/images/B%20Logo.png",
       "image": "https://brandsap.com/images/B%20Logo.png",
       "founder": { "@type": "Person", "@id": "https://brandsap.com/#satyam-pandey" },
-      "description": "Brandsap is a brand and digital studio founded by Satyam Pandey—helping founders and businesses with branding, strategy, design, and high-performance websites.",
+      "description": "Brandsap is a brand and digital studio founded by Satyam Pandey, helping founders and businesses with branding, strategy, design, and high-performance websites.",
       "sameAs": [
         "https://pandeysatyam.com/",
         "https://github.com/satyamamarpandey",
         "https://www.linkedin.com/in/pandeysatyam/"
       ]
+    }
+  </script>
+
+  <!-- ✅ Structured Data: WebPage (Homepage) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://brandsap.com/#homepage",
+      "url": "https://brandsap.com/",
+      "name": "Brandsap – Brand, Strategy & Digital",
+      "description": "Brandsap is a brand and digital studio helping founders and businesses with branding, strategy, design, and high-performance websites.",
+      "isPartOf": { "@type": "WebSite", "@id": "https://brandsap.com/#website" },
+      "about": { "@type": "Organization", "@id": "https://brandsap.com/#brandsap" }
+    }
+  </script>
+
+  <!-- ✅ Structured Data: ProfessionalService (Local/Service boost) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "@id": "https://brandsap.com/#local-business",
+      "name": "Brandsap",
+      "url": "https://brandsap.com/",
+      "image": "https://brandsap.com/images/B%20Logo.png",
+      "logo": "https://brandsap.com/images/B%20Logo.png",
+      "founder": { "@type": "Person", "@id": "https://brandsap.com/#satyam-pandey" },
+      "sameAs": [
+        "https://pandeysatyam.com/",
+        "https://github.com/satyamamarpandey",
+        "https://www.linkedin.com/in/pandeysatyam/"
+      ],
+      "areaServed": "Worldwide",
+      "priceRange": "$$",
+      "serviceType": ["Brand Strategy", "Brand Identity Design", "Website Design", "Website Development", "Local SEO Setup"]
     }
   </script>
 
