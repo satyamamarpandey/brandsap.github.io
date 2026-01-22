@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/SupabaseClient";
+import useFlashTimeout from "../hooks/useFlashTimeout";
+
 
 export default function Auth() {
   const nav = useNavigate();
@@ -42,6 +44,10 @@ export default function Auth() {
 
   const [err, setErr] = useState("");
   const [infoMsg, setInfoMsg] = useState("");
+
+  useFlashTimeout(infoMsg, setInfoMsg, 3500); // success/info
+  useFlashTimeout(err, setErr, 5000);         // errors a bit longer
+
 
   const [sessionUser, setSessionUser] = useState(null);
 
@@ -278,7 +284,7 @@ export default function Auth() {
   if (checkingSession) {
     return (
       <div className="page">
-        <section className="container" style={{ padding: "56px 0", maxWidth: 520 }}>
+        <section className="container auth-container">
           <div className="authCard">
             <div className="jobMuted">Checking session...</div>
           </div>
@@ -289,7 +295,7 @@ export default function Auth() {
 
   return (
     <div className="page">
-      <section className="container" style={{ padding: "56px 0", maxWidth: 520 }}>
+      <section className="container auth-container">
         <div className="authCard">
           <div className="authTop">
             <h1 className="authTitle">{mode === "signup" ? "Create account" : "Sign in"}</h1>

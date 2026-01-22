@@ -6,7 +6,9 @@ export default function ProtectedRoute({ children }) {
   const loc = useLocation();
 
   if (loading) return null; // or a spinner
-  if (!user) return <Navigate to={`/auth?next=${encodeURIComponent(loc.pathname)}`} replace />;
+
+  const next = encodeURIComponent(loc.pathname + (loc.search || ""));
+  if (!user) return <Navigate to={`/careers/auth?next=${next}`} replace />;
 
   return children;
 }

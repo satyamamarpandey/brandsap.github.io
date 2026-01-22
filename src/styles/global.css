@@ -4056,3 +4056,36 @@ main{
 
 
 
+/* Desktop-only: make bullets start at same level */
+@media (min-width: 900px) {
+  .feature-grid .feature-card{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .feature-grid .feature-card ul{
+    margin-top: auto;   /* pushes bullets down to align */
+  }
+
+  /* optional: force equal card heights (tweak number) */
+  .feature-grid .feature-card{
+    min-height: 250px;  /* try 280–340 */
+  }
+}
+
+/* Auth page width + spacing */
+.auth-container{
+  max-width: 520px;     /* ✅ desktop width */
+  margin: 0 auto;
+  padding: 56px 0;
+  width: 100%;
+}
+
+@media (max-width: 600px){
+  .auth-container{
+    padding-left: 16px; /* ✅ phone side padding */
+    padding-right: 16px;
+  }
+}
+
+

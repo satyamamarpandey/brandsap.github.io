@@ -14,9 +14,10 @@ export default function TopBar() {
   const backTo = loc.pathname.startsWith("/careers") ? "/careers" : "/careers";
 
   async function onSignOut() {
-    await supabase.auth.signOut();
-    nav("/careers", { replace: true });
-  }
+  await supabase.auth.signOut();
+  sessionStorage.removeItem("careers_auth_ok");
+  nav("/careers/auth?next=/careers", { replace: true });
+}
 
   return (
     <div className="topbar">

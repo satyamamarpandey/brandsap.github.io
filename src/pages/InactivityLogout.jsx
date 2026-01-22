@@ -17,22 +17,22 @@ export default function InactivityLogout({ minutes = DEFAULT_MINUTES }) {
   };
 
   const startTimer = () => {
-    clearTimer();
-    timerRef.current = window.setTimeout(async () => {
-      // sign out due to inactivity
-      await supabase.auth.signOut();
+  clearTimer();
 
-      // clear your gate (so apply pages force auth again)
-      sessionStorage.removeItem("careers_auth_ok");
+  // ✅ Only enforce inactivity logout on careers pages
+  const here = loc.pathname + (loc.search || "");
+  if (!here.startsWith("/careers")) return;
 
-      // remember why we redirected (so Auth page can show message)
-      sessionStorage.setItem("auth_reason", "inactivity");
+  timerRef.current = window.setTimeout(async () => {
+    await supabase.auth.signOut();
+    sessionStorage.removeItem("careers_auth_ok");
+    sessionStorage.setItem("auth_reason", "inactivity");
 
-      // keep the same destination after sign-in
-      const next = loc.pathname + (loc.search || "");
-      nav(`/careers/auth?next=${encodeURIComponent(next)}`, { replace: true });
-    }, ms);
-  };
+    const next = loc.pathname + (loc.search || "");
+    nav(`/careers/auth?next=${encodeURIComponent(next)}`, { replace: true });
+  }, ms);
+};
+
 
   useEffect(() => {
     const reset = () => startTimer();

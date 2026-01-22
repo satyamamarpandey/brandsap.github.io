@@ -99,16 +99,6 @@ export default function ShowcaseSection({ activeId, onSelect }) {
                 >
                   See what’s included <span>↗</span>
                 </button>
-
-                <button
-                  className="ghost-btn card-ghost"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelect(card.id);
-                  }}
-                >
-                  Expand
-                </button>
               </div>
             </motion.article>
           );

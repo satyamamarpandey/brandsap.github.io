@@ -76,13 +76,14 @@ function WipeLayer({ progress, delay = 0 }) {
 /** ✅ TIGHT LIST + ALWAYS FITS */
 function ListWithMore({
   items,
-  max = 5,
+  max, // <- no default
   ulStyle = {},
   liStyle = {},
   moreStyle = {},
 }) {
-  const shown = items.slice(0, max);
-  const remaining = Math.max(0, items.length - max);
+  const limit = typeof max === "number" ? max : items.length; // show all by default
+  const shown = items.slice(0, limit);
+  const remaining = Math.max(0, items.length - limit);
 
   return (
     <ul
@@ -151,7 +152,7 @@ export default function StickySplitFeatures() {
     const compute = () => {
       const w = el.getBoundingClientRect().width || window.innerWidth;
       const maxEndW = Math.floor((w - 2 * gutter - 2 * gap) / 3);
-      const endW = Math.max(300, Math.min(380, maxEndW));
+      const endW = Math.max(320, Math.min(420, maxEndW));
       const spread = endW + gap;
       setFit({ endW, spread });
     };
@@ -168,9 +169,9 @@ export default function StickySplitFeatures() {
     };
   }, []);
 
-  const w0 = useTransform(scrollYProgress, [0, tEnd], [860, fit.endW]);
-  const w1 = useTransform(scrollYProgress, [0, tEnd], [860, fit.endW]);
-  const w2 = useTransform(scrollYProgress, [0, tEnd], [860, fit.endW]);
+  const w0 = useTransform(scrollYProgress, [0, tEnd], [900, fit.endW]);
+  const w1 = useTransform(scrollYProgress, [0, tEnd], [900, fit.endW]);
+  const w2 = useTransform(scrollYProgress, [0, tEnd], [900, fit.endW]);
 
   const x0 = useTransform(scrollYProgress, [0, tEnd], [0, -fit.spread]);
   const x1 = useTransform(scrollYProgress, [0, tEnd], [0, 0]);
@@ -184,13 +185,19 @@ export default function StickySplitFeatures() {
 
   /** ✅ Desktop-only typography + spacing tuning (FINAL FIT) */
   const cardBaseStyle = {
-    borderRadius: 32,
-    overflow: "hidden",
-    padding: "20px 20px 14px",
-    border: "1px solid rgba(255,255,255,0.14)",
-    boxShadow: "0 40px 130px rgba(0,0,0,0.55)",
-    backdropFilter: "blur(10px)",
-  };
+  borderRadius: 32,
+  overflow: "hidden",
+  padding: "22px 22px 16px",          // slightly bigger padding
+  border: "1px solid rgba(255,255,255,0.14)",
+  boxShadow: "0 40px 130px rgba(0,0,0,0.55)",
+  backdropFilter: "blur(10px)",
+
+  // ✅ NEW: force footer alignment
+  display: "flex",
+  flexDirection: "column",
+  minHeight: 480,                    // ✅ keeps all cards same height
+};
+
 
   const chipStyle = {
     fontSize: 12.5,
@@ -215,13 +222,14 @@ export default function StickySplitFeatures() {
   };
 
   const footerStyle = {
-    marginTop: 14,
-    paddingTop: 12,
-    borderTop: "1px solid rgba(255,255,255,0.10)",
-    display: "flex",
-    justifyContent: "space-between",
-    gap: 16,
-  };
+  marginTop: "auto",                 // ✅ pushes footer to bottom
+  paddingTop: 12,
+  borderTop: "1px solid rgba(255,255,255,0.10)",
+  display: "flex",
+  justifyContent: "space-between",
+  gap: 16,
+};
+
 
   const footerMetaStyle = {
     display: "grid",
@@ -284,7 +292,7 @@ export default function StickySplitFeatures() {
                     <h3 style={titleStyle}>{FEATURES[0].title}</h3>
                     <p style={bodyStyle}>{FEATURES[0].body}</p>
 
-                    <ListWithMore items={FEATURES[0].items} max={5} />
+                    <ListWithMore items={FEATURES[0].items} />
 
                     <div className="sticky-card-footer" style={footerStyle}>
                       <div className="footer-meta" style={footerMetaStyle}>
@@ -328,7 +336,7 @@ export default function StickySplitFeatures() {
                     <h3 style={titleStyle}>{FEATURES[1].title}</h3>
                     <p style={bodyStyle}>{FEATURES[1].body}</p>
 
-                    <ListWithMore items={FEATURES[1].items} max={5} />
+                    <ListWithMore items={FEATURES[1].items} />
 
                     <div className="sticky-card-footer" style={footerStyle}>
                       <div className="footer-meta" style={footerMetaStyle}>
@@ -372,7 +380,7 @@ export default function StickySplitFeatures() {
                     <h3 style={titleStyle}>{FEATURES[2].title}</h3>
                     <p style={bodyStyle}>{FEATURES[2].body}</p>
 
-                    <ListWithMore items={FEATURES[2].items} max={5} />
+                    <ListWithMore items={FEATURES[2].items}  />
 
                     <div className="sticky-card-footer" style={footerStyle}>
                       <div className="footer-meta" style={footerMetaStyle}>

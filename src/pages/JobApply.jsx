@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { supabase } from "../lib/SupabaseClient";
+import useFlashTimeout from "../hooks/useFlashTimeout";
+
 
 export default function Apply() {
   const nav = useNavigate();
@@ -53,6 +55,10 @@ export default function Apply() {
   const [infoMsg, setInfoMsg] = useState("");
   const [err, setErr] = useState("");
 
+  useFlashTimeout(infoMsg, setInfoMsg, 3500); // success/info
+  useFlashTimeout(err, setErr, 5000);         // errors a bit longer
+
+
   const resumeAccept =
     ".pdf,.doc,.docx,.txt,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
@@ -70,8 +76,6 @@ export default function Apply() {
     if (!clean(phone)) return "Phone is required.";
     if (!clean(linkedin)) return "LinkedIn is required.";
     if (!isHttpUrl(linkedin)) return "LinkedIn must start with http:// or https://";
-    if (!clean(portfolio)) return "Portfolio is required.";
-    if (!isHttpUrl(portfolio)) return "Portfolio must start with http:// or https://";
     if (!clean(coverLetter)) return "Cover letter is required.";
 
     const r = validateResume();

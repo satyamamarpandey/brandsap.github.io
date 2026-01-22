@@ -43,7 +43,6 @@ export default function Hero() {
 
           <div className="hero-meta tectonic-blur delay-3">
             <span className="meta-label">Built for local and mid-sized brands</span>
-            <span className="meta-dot" />
             <span>Setup, launch, and optimize with reporting every month.</span>
           </div>
         </div>
