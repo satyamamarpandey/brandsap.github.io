@@ -20,24 +20,32 @@ export default function TopBar() {
 }
 
   return (
-    <div className="topbar">
-      <div className="topbar-left">
-        <span className="topbar-hi">
-          Signed in as <b>{displayName || "Account"}</b>
-        </span>
+    <div className="topbar topbar--auth">
+  <div className="topbar-left topbar__left">
+    <span className="topbar-hi topbar__hi">
+      Signed in as <b className="topbar__name">{displayName || "Account"}</b>
+    </span>
 
-        <Link className="topbar-link" to={backTo}>
-          Back to Jobs
-        </Link>
+    <div className="topbar-links topbar__links">
+      <Link className="topbar-link topbar__link" to={backTo}>
+        <span className="labelLong">Back to Jobs</span>
+        <span className="labelShort">Jobs</span>
+      </Link>
 
-        <Link className="topbar-link" to="/careers/dashboard">
-          Dashboard
-        </Link>
-      </div>
-
-      <button className="topbar-btn topbar-btn--sm" onClick={onSignOut}>
-        Sign out
-      </button>
+      <Link className="topbar-link topbar__link" to="/careers/dashboard">
+        <span className="labelLong">Dashboard</span>
+        <span className="labelShort">Dash</span>
+      </Link>
     </div>
+  </div>
+
+  <div className="topbar-right topbar__right">
+    <button className="topbar-btn topbar-btn--sm topbar__signout" onClick={onSignOut}>
+      <span className="labelLong">Sign out</span>
+      <span className="labelShort">Out</span>
+    </button>
+  </div>
+</div>
+
   );
 }

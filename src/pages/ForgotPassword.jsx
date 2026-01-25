@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/SupabaseClient";
 
-// ✅ Local QA: use localhost origin in dev; use production domain in prod
+// Local QA: localhost in dev; production domain in prod
 const RESET_BASE_URL =
   import.meta.env.MODE === "development"
     ? window.location.origin
@@ -14,6 +14,7 @@ export default function ForgotPassword() {
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cooldownUntil, setCooldownUntil] = useState(0);
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
@@ -24,30 +25,48 @@ export default function ForgotPassword() {
 
   const submit = async (e) => {
     e.preventDefault();
+
+    // ✅ Prevent double submits (mobile double tap / enter key)
+    if (loading) return;
+
+    // ✅ Cooldown to avoid hitting Supabase email limits
+    const now = Date.now();
+    if (now < cooldownUntil) {
+      const seconds = Math.ceil((cooldownUntil - now) / 1000);
+      setErr("");
+      setMsg(`Please wait ${seconds}s before requesting another reset email.`);
+      return;
+    }
+
     setErr("");
     setMsg("");
     setLoading(true);
 
     try {
-  setErr("");
-  setMsg("");
+      // ✅ Keep redirect clean; no extra query params
+      const redirectTo = `${RESET_BASE_URL}/reset-password`;
 
-  // ✅ Always send to the current environment (localhost in QA, brandsap in prod)
-  const redirectTo = `${window.location.origin}/reset-password`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo,
+      });
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-    redirectTo,
-  });
+      if (error) throw error;
 
-  if (error) throw error;
+      // 60s cooldown prevents rapid repeats
+      setCooldownUntil(Date.now() + 60_000);
 
-  setMsg("If this email exists, a reset link has been sent. Please check your inbox.");
-} catch (e2) {
-  setErr(e2?.message || "Failed to send reset email");
-} finally {
-  setLoading(false);
-}
-
+      setMsg("If this email exists, a reset link has been sent. Please check your inbox.");
+    } catch (e2) {
+      // If rate-limited, show a friendly message
+      const m = (e2?.message || "").toLowerCase();
+      if (m.includes("rate limit")) {
+        setErr("Email rate limit reached. Please wait and try again later.");
+      } else {
+        setErr(e2?.message || "Failed to send reset email");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,9 +102,7 @@ export default function ForgotPassword() {
               <button
                 type="button"
                 className="authLink"
-                onClick={() =>
-                  nav(`/careers/auth?next=${encodeURIComponent(nextPath)}`)
-                }
+                onClick={() => nav(`/careers/auth?next=${encodeURIComponent(nextPath)}`)}
               >
                 Back to sign in
               </button>

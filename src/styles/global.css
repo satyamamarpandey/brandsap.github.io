@@ -4260,3 +4260,65 @@ main{
   color: var(--text-muted);
   font-size: 14px;
 }
+
+/* Auth topbar layout helpers */
+.topbar--auth {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar__left {
+  min-width: 0; /* allows truncation instead of pushing signout off-screen */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar__hi {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 52vw;
+}
+
+.topbar__links {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.topbar__right {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Hide short labels by default */
+.labelShort { display: none; }
+
+/* Mobile: stack links under "Signed in as" */
+@media (max-width: 520px) {
+  .topbar--auth {
+    align-items: flex-start;
+  }
+
+  .topbar__left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .topbar__hi {
+    max-width: 76vw;
+  }
+
+  /* Swap labels to shorter text on tiny screens */
+  @media (max-width: 360px) {
+    .labelLong { display: none; }
+    .labelShort { display: inline; }
+  }
+}
