@@ -44,7 +44,7 @@ export default function Home() {
       </section>
 
       {/* No extra section padding here */}
-<div ref={stickyRef} className="sticky-split-anchor">
+<div ref={stickyRef} className="section sticky-split-anchor">
   <StickySplitFeatures />
 </div>
 

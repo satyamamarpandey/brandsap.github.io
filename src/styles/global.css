@@ -3529,14 +3529,19 @@ li:empty {
 }
 
 /* 2) Reduce the sticky section scroll spacer (THIS fixes the empty space) */
+/* ✅ Desktop: enough scroll for sticky to "release" + space before footer */
 @media (min-width: 901px) {
   .sticky-split-section {
-    height: calc(100vh - 60px) !important;
-    /* was 140vh */
-    padding: 0 !important;
-    margin: 0 !important;
+    height: 125vh !important; /* was 160vh */
+    padding-bottom: clamp(40px, 5vh, 80px) !important; /* was 72/8vh/140 */
+    margin-bottom: 0 !important;
   }
 }
+
+.sticky-split-anchor {
+  padding-bottom: clamp(40px, 5vh, 80px);
+}
+
 
 /* 3) Optional: remove “last section padding” (can add extra bottom space on Home) */
 .section:last-of-type {
@@ -4089,3 +4094,169 @@ main{
 }
 
 
+/* Base ghost button */
+.ghost-btn{
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.88);
+  -webkit-tap-highlight-color: transparent; /* iOS tap flash */
+  background-clip: padding-box;
+
+  /* If your "glass" background eats the border, this helps */
+  box-shadow: 0 0 0 1px rgba(255,255,255,.10) inset;
+}
+
+/* Extra boost on small screens (border gets lost on mobile often) */
+@media (max-width: 640px){
+  .ghost-btn{
+    border-color: rgba(255,255,255,.30);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.16) inset;
+  }
+}
+
+/* Hover effects only on real hover devices */
+@media (hover: hover) and (pointer: fine){
+  .ghost-btn:hover{
+    background: rgba(255,255,255,.10);
+    border-color: rgba(255,255,255,.38);
+  }
+
+  .primary-btn:hover{
+    filter: brightness(1.03);
+  }
+}
+
+/* On touch devices: ignore hover */
+@media (hover: none) and (pointer: coarse){
+  .ghost-btn:hover,
+  .primary-btn:hover{
+    background: inherit;
+    filter: none;
+  }
+}
+
+/* default (desktop/tablet) */
+.authError,
+.authSuccess{
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.35;
+  margin: 12px 0 14px;
+}
+
+/* phone */
+@media (max-width: 640px){
+  .authError,
+  .authSuccess{
+    padding: 8px 10px;      /* smaller box */
+    border-radius: 10px;
+    font-size: 12.5px;      /* smaller text */
+    line-height: 1.25;
+    margin: 10px 0 12px;
+  }
+}
+
+@media (max-width: 640px){
+  .authError,
+  .authSuccess{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Page layout: content pushes footer down */
+.page {
+  min-height: 100svh;           /* better than 100vh on mobile/zoom */
+  display: flex;
+  flex-direction: column;
+}
+
+.page > main {
+  flex: 1;
+}
+
+/* ensure last section never touches footer */
+.page > main {
+  padding-bottom: 72px;          /* tweak if footer is taller */
+}
+
+@media (max-width: 640px){
+  .page > main {
+    padding-bottom: 96px;
+  }
+}
+
+footer {
+  position: relative;
+}
+
+/* App layout: content pushes footer down */
+#root { min-height: 100%; }
+
+.app-root{
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+main{
+  flex: 1;
+  min-height: 0;
+  padding-top: calc(var(--navH) + var(--topbarH));
+  padding-bottom: 56px; /* breathing room before footer */
+}
+
+/* footer stays in normal flow */
+.footer{
+  position: relative;
+}
+
+/* =========================================
+   FIX: Footer covering StickySplit cards
+   (footer is not fixed; StickySplit is sticky)
+========================================= */
+
+/* Keep the sticky section above later sections while it's active */
+.sticky-split-sticky {
+  position: sticky;
+  z-index: 20; /* higher than footer */
+}
+
+/* Lift sticky content up so footer doesn't cover it at zoom */
+.sticky-split-sticky {
+  padding-bottom: clamp(120px, 12vh, 180px) !important;
+}
+
+/* Slightly reduce stage height so it fits more reliably */
+.sticky-split-stage {
+  height: clamp(360px, 46vh, 520px) !important;
+}
+
+/* Footer stays normal (just explicit) */
+.footer, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Auth page centering */
+.authPage {
+  min-height: calc(100vh - 80px);
+  display: grid;
+  place-items: center;
+  padding: 56px 16px;
+}
+
+.authWrap {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.authMuted {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}

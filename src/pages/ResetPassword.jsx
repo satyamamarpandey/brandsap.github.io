@@ -6,123 +6,123 @@ export default function ResetPassword() {
   const nav = useNavigate();
   const loc = useLocation();
 
+  const [ready, setReady] = useState(false);
+  const [pw, setPw] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [err, setErr] = useState("");
+
   const nextPath = useMemo(() => {
     const p = new URLSearchParams(loc.search).get("next");
-    return p && p.startsWith("/") ? p : "/careers";
+    return p && p.startsWith("/") ? p : "/careers/auth";
   }, [loc.search]);
 
-  const [checking, setChecking] = useState(true);
-  const [hasRecoverySession, setHasRecoverySession] = useState(false);
-
-  const [pw1, setPw1] = useState("");
-  const [pw2, setPw2] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
-  const [msg, setMsg] = useState("");
-
   useEffect(() => {
-    let mounted = true;
-
     (async () => {
-      // Supabase will read tokens from URL when detectSessionInUrl=true
-      const { data } = await supabase.auth.getSession();
-      if (!mounted) return;
+      setErr("");
+      setMsg("");
 
-      setHasRecoverySession(!!data?.session);
-      setChecking(false);
+      // 1) If Supabase already processed the link and cleaned the URL,
+      //    we should already have a session here.
+      const { data: s1 } = await supabase.auth.getSession();
+      if (s1?.session) {
+        setReady(true);
+        return;
+      }
+
+      // 2) If not, try processing URL (covers both PKCE ?code and hash recovery)
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      const hasRecoveryHash = window.location.hash?.includes("type=recovery");
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          setErr(error.message || "Reset link is invalid or expired. Please request a new one.");
+          setReady(true);
+          return;
+        }
+        const { data: s2 } = await supabase.auth.getSession();
+        if (!s2?.session) {
+          setErr("Session not created. Please request a new reset link and try again.");
+        }
+        setReady(true);
+        return;
+      }
+
+      if (hasRecoveryHash) {
+        const { data, error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+        if (error || !data?.session) {
+          setErr(error?.message || "Reset link is invalid or expired. Please request a new one.");
+          setReady(true);
+          return;
+        }
+        setReady(true);
+        return;
+      }
+
+      // 3) No session + no URL params
+      setErr("Reset link is invalid or expired. Please request a new one.");
+      setReady(true);
     })();
-
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   const submit = async (e) => {
     e.preventDefault();
     setErr("");
     setMsg("");
-
-    if (pw1.length < 6) {
-      setErr("Password must be at least 6 characters.");
-      return;
-    }
-    if (pw1 !== pw2) {
-      setErr("Passwords do not match.");
-      return;
-    }
-
     setLoading(true);
+
     try {
-      const { error } = await supabase.auth.updateUser({ password: pw1 });
+      const { error } = await supabase.auth.updateUser({ password: pw });
       if (error) throw error;
 
-      setMsg("Password updated successfully ✅");
-      // Optional: sign out to force fresh sign-in
-      await supabase.auth.signOut();
-      sessionStorage.removeItem("careers_auth_ok");
-
-      // Go back to auth
-      nav(`/careers/auth?next=${encodeURIComponent(nextPath)}`);
+      setMsg("Password updated. Redirecting…");
+      setTimeout(() => nav(nextPath), 700);
     } catch (e2) {
-      setErr(e2?.message || "Failed to reset password");
+      setErr(e2?.message || "Failed to update password");
     } finally {
       setLoading(false);
     }
   };
 
-  if (checking) {
-    return (
-      <div className="page">
-        <section className="container" style={{ padding: "56px 0", maxWidth: 520 }}>
-          <div className="jobCard">
-            <div className="jobMuted">Opening reset link…</div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
-  if (!hasRecoverySession) {
-    return (
-      <div className="page">
-        <section className="container" style={{ padding: "56px 0", maxWidth: 520 }}>
-          <div className="authCard">
-            <h1 className="authTitle">Reset link expired</h1>
-            <p className="authSub">This reset link is invalid or already used. Please request a new one.</p>
-            <button className="authPrimaryBtn" type="button" onClick={() => nav(`/forgot-password?next=${encodeURIComponent(nextPath)}`)}>
-              Request new link
-            </button>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
   return (
-    <div className="page">
-      <section className="container" style={{ padding: "56px 0", maxWidth: 520 }}>
+    <div className="page authPage">
+      <section className="container authWrap">
         <div className="authCard">
-          <h1 className="authTitle">Set a new password</h1>
-          <p className="authSub">Choose a strong password and confirm it.</p>
+          <h1 className="authTitle">Reset password</h1>
+          <p className="authSub">Enter a new password to finish resetting your account.</p>
 
           {err && <div className="authError">{err}</div>}
           {msg && <div className="authSuccess">{msg}</div>}
 
-          <form onSubmit={submit} className="authForm">
-            <div className="authField">
-              <label>New password</label>
-              <input type="password" value={pw1} onChange={(e) => setPw1(e.target.value)} required />
-            </div>
+          {!ready && !err && <div className="authMuted">Validating reset link…</div>}
 
-            <div className="authField">
-              <label>Confirm password</label>
-              <input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} required />
-            </div>
+          {ready && !err && (
+            <form onSubmit={submit} className="authForm">
+              <div className="authField">
+                <label>New password</label>
+                <input
+                  type="password"
+                  value={pw}
+                  onChange={(e) => setPw(e.target.value)}
+                  minLength={8}
+                  required
+                  placeholder="Minimum 8 characters"
+                />
+              </div>
 
-            <button className="authPrimaryBtn" disabled={loading} type="submit">
-              {loading ? "Updating…" : "Update password"}
+              <button className="authPrimaryBtn" disabled={loading} type="submit">
+                {loading ? "Updating…" : "Update password"}
+              </button>
+            </form>
+          )}
+
+          <div className="authBottom">
+            <button type="button" className="authLink" onClick={() => nav("/careers/auth")}>
+              Back to sign in
             </button>
-          </form>
+          </div>
         </div>
       </section>
     </div>

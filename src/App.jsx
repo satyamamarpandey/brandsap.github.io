@@ -32,6 +32,7 @@ export default function App() {
   const loc = useLocation();
   const { user, loading } = useAuth();
 
+  // ✅ Topbar only on /careers pages AND only when signed in (and auth is done loading)
   const onCareers = loc.pathname.startsWith("/careers");
   const showTopBar = onCareers && !loading && !!user;
 
@@ -43,7 +44,7 @@ export default function App() {
       <ScrollToTop />
       <Navbar />
 
-      {/* ✅ now it will be visible BELOW fixed navbar */}
+      {/* ✅ Visible below fixed navbar; only for signed-in users on careers pages */}
       {showTopBar ? <TopBar /> : null}
 
       <main>
@@ -70,6 +71,7 @@ export default function App() {
             }
           />
 
+          {/* ✅ Password reset flow */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
