@@ -18,6 +18,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
 
     // ✅ recommended for SPAs
-    flowType: "pkce",
+    flowType: "implicit",
   },
 });

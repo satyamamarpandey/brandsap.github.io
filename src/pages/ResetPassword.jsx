@@ -8,6 +8,7 @@ export default function ResetPassword() {
 
   const [ready, setReady] = useState(false);
   const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -18,61 +19,64 @@ export default function ResetPassword() {
   }, [loc.search]);
 
   useEffect(() => {
+    let mounted = true;
+
     (async () => {
+      if (!mounted) return;
       setErr("");
       setMsg("");
 
-      // 1) If Supabase already processed the link and cleaned the URL,
-      //    we should already have a session here.
-      const { data: s1 } = await supabase.auth.getSession();
+      // 1) If Supabase already has a session (e.g. URL already processed)
+      const { data: s1, error: e1 } = await supabase.auth.getSession();
+      if (!mounted) return;
+
+      if (e1) {
+        setErr(e1.message || "Unable to validate reset link.");
+        setReady(true);
+        return;
+      }
+
       if (s1?.session) {
         setReady(true);
         return;
       }
 
-      // 2) If not, try processing URL (covers both PKCE ?code and hash recovery)
-      const url = new URL(window.location.href);
-      const code = url.searchParams.get("code");
-      const hasRecoveryHash = window.location.hash?.includes("type=recovery");
+      // 2) Implicit flow: pull session from URL (hash tokens) and store it
+      const { data, error } = await supabase.auth.getSessionFromUrl({
+        storeSession: true,
+      });
 
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) {
-          setErr(error.message || "Reset link is invalid or expired. Please request a new one.");
-          setReady(true);
-          return;
-        }
-        const { data: s2 } = await supabase.auth.getSession();
-        if (!s2?.session) {
-          setErr("Session not created. Please request a new reset link and try again.");
-        }
+      if (!mounted) return;
+
+      if (error || !data?.session) {
+        setErr(error?.message || "Reset link is invalid or expired. Please request a new one.");
         setReady(true);
         return;
       }
 
-      if (hasRecoveryHash) {
-        const { data, error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
-        if (error || !data?.session) {
-          setErr(error?.message || "Reset link is invalid or expired. Please request a new one.");
-          setReady(true);
-          return;
-        }
-        setReady(true);
-        return;
-      }
-
-      // 3) No session + no URL params
-      setErr("Reset link is invalid or expired. Please request a new one.");
       setReady(true);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const submit = async (e) => {
     e.preventDefault();
     setErr("");
     setMsg("");
-    setLoading(true);
 
+    if (pw.length < 8) {
+      setErr("Password must be at least 8 characters.");
+      return;
+    }
+    if (pw !== pw2) {
+      setErr("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({ password: pw });
       if (error) throw error;
@@ -109,6 +113,20 @@ export default function ResetPassword() {
                   minLength={8}
                   required
                   placeholder="Minimum 8 characters"
+                  autoComplete="new-password"
+                />
+              </div>
+
+              <div className="authField">
+                <label>Confirm password</label>
+                <input
+                  type="password"
+                  value={pw2}
+                  onChange={(e) => setPw2(e.target.value)}
+                  minLength={8}
+                  required
+                  placeholder="Re-enter password"
+                  autoComplete="new-password"
                 />
               </div>
 

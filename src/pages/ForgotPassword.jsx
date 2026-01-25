@@ -26,10 +26,8 @@ export default function ForgotPassword() {
   const submit = async (e) => {
     e.preventDefault();
 
-    // ✅ Prevent double submits (mobile double tap / enter key)
     if (loading) return;
 
-    // ✅ Cooldown to avoid hitting Supabase email limits
     const now = Date.now();
     if (now < cooldownUntil) {
       const seconds = Math.ceil((cooldownUntil - now) / 1000);
@@ -43,21 +41,19 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      // ✅ Keep redirect clean; no extra query params
       const redirectTo = `${RESET_BASE_URL}/reset-password`;
 
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo,
       });
-
       if (error) throw error;
 
-      // 60s cooldown prevents rapid repeats
       setCooldownUntil(Date.now() + 60_000);
 
-      setMsg("If this email exists, a reset link has been sent. Please check your inbox.");
+      setMsg(
+        "If this email exists, a reset link has been sent. Please check your inbox."
+      );
     } catch (e2) {
-      // If rate-limited, show a friendly message
       const m = (e2?.message || "").toLowerCase();
       if (m.includes("rate limit")) {
         setErr("Email rate limit reached. Please wait and try again later.");
