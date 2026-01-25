@@ -4348,7 +4348,7 @@ main{
     top: calc(var(--navH) + var(--topbarH)) !important;
 
     /* keep sticky, but cap the stage height so it doesn't balloon */
-    height: clamp(640px, calc(100vh - var(--navH) - var(--topbarH)), 760px) !important;
+    height: clamp(640px, calc(100vh - var(--navH) - var(--topbarH))) !important;
     min-height: 0 !important;
 
     padding-top: clamp(14px, 8vh, 44px) !important;  /* was 25vh */
@@ -4359,5 +4359,44 @@ main{
   .sticky-split-stage{
     height: clamp(360px, 46vh, 520px) !important;
     margin-bottom: clamp(18px, 3vh, 40px) !important;
+  }
+}
+
+/* =========================================================
+   StickySplit — reduce overall space (desktop + mobile)
+   Put at very bottom of global.css
+========================================================= */
+
+/* Desktop */
+@media (min-width: 901px) {
+  /* This was the biggest contributor: 25vh is too much */
+  .sticky-split-sticky {
+    padding-top: clamp(12px, 10vh, 28px) !important;
+    padding-bottom: clamp(12px, 3vh, 26px) !important;
+  }
+
+  /* Reduce stage height (cards area) */
+  .sticky-split-stage {
+    height: clamp(340px, 40vh, 460px) !important;
+    margin-bottom: clamp(16px, 2.5vw, 28px) !important;
+  }
+
+  /* Keep a smaller but clean footer gap */
+  .sticky-split-section {
+    padding-bottom: clamp(18px, 3vh, 40px) !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .sticky-split-section {
+    margin-top: 14px !important;
+    padding-top: 16px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .sticky-split-stage {
+    height: clamp(320px, 44vh, 440px) !important;
+    margin-bottom: 18px !important;
   }
 }
