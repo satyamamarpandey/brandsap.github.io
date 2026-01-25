@@ -3764,9 +3764,8 @@ main>.page>section:first-child,
 }
 
 /* Keep section rhythm but slightly tighter (more premium) */
-.section {
-  padding: clamp(2.2rem, 6.2vw, 0.1rem) 0 !important;
-}
+.section { padding: clamp(2.2rem, 6.2vw, 3.4rem) 0 !important; }
+
 
 @media (max-width: 768px) {
   :root {
@@ -4320,5 +4319,45 @@ main{
   @media (max-width: 360px) {
     .labelLong { display: none; }
     .labelShort { display: inline; }
+  }
+}
+
+/* =========================================================
+   HOME — StickySplit: remove huge blank space on zoom-out
+   Paste at VERY BOTTOM of global.css
+========================================================= */
+
+/* 1) Remove extra .section padding around the sticky feature wrapper */
+.section.sticky-split-anchor{
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* 2) Desktop: cap the scroll container height (avoid giant 140vh at zoom-out) */
+@media (min-width: 901px){
+  .sticky-split-section{
+    height: auto !important;                         /* kill fixed 140vh */
+   /*min-height: clamp(920px, 135vh, 1220px) !important; /* enough scroll, but capped */
+    padding-top: 0 !important;
+    padding-bottom: clamp(28px, 4vh, 56px) !important;
+    margin: 0 !important;
+  }
+
+  /* 3) Reduce the big “top gap” caused by 25vh */
+  .sticky-split-sticky{
+    top: calc(var(--navH) + var(--topbarH)) !important;
+
+    /* keep sticky, but cap the stage height so it doesn't balloon */
+    height: clamp(640px, calc(100vh - var(--navH) - var(--topbarH)), 760px) !important;
+    min-height: 0 !important;
+
+    padding-top: clamp(14px, 8vh, 44px) !important;  /* was 25vh */
+    padding-bottom: clamp(18px, 4vh, 40px) !important;
+  }
+
+  /* 4) Slightly smaller stage so footer never feels like it collides */
+  .sticky-split-stage{
+    height: clamp(360px, 46vh, 520px) !important;
+    margin-bottom: clamp(18px, 3vh, 40px) !important;
   }
 }
