@@ -4400,3 +4400,31 @@ main{
     margin-bottom: 18px !important;
   }
 }
+
+/* =========================================================
+   FIX: Remove the horizontal seam at section boundary
+   Cause: .sticky-split-bg overlay starts at exact top edge (inset:0)
+========================================================= */
+
+/* Let the overlay extend past the section edges + blur it */
+.sticky-split-bg{
+  inset: -220px !important;             /* bleed beyond top/bottom */
+  opacity: 0.55 !important;
+  filter: blur(28px) saturate(1.1) !important;
+  transform: translateZ(0);             /* smoother compositing */
+}
+
+/* Make the overlay itself softer at the “start” */
+.sticky-split-bg{
+  background: radial-gradient(
+    70% 90% at 50% 18%,
+    rgba(255,255,255,0.05) 0%,
+    rgba(0,0,0,0) 70%
+  ) !important;
+}
+
+/* Ensure the section isn't painting anything solid behind it */
+.sticky-split-section,
+.section.sticky-split-anchor{
+  background: transparent !important;
+}
